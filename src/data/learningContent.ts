@@ -1,0 +1,406 @@
+export type Bite = {
+  title: string;
+  text: string;
+};
+
+export type Lesson = {
+  id: string;
+  title: string;
+  time: string;
+  objective: string;
+  bites: Bite[];
+  practice?: string[];
+  check?: string;
+};
+
+export type Module = {
+  id: string;
+  title: string;
+  summary: string;
+  lessons: Lesson[];
+};
+
+export type LearningTrack = {
+  id: string;
+  title: string;
+  subtitle: string;
+  sourceLabel: string;
+  modules: Module[];
+};
+
+export const learningTracks: LearningTrack[] = [
+  {
+    id: "git-pega",
+    title: "Git for Pega",
+    subtitle: "",
+    sourceLabel: "",
+    modules: [
+      {
+        id: "core-git",
+        title: "Module 1: Core Git Workflow",
+        summary: "Git zones, daily commands, staging, history, and branching.",
+        lessons: [
+          {
+            id: "zones",
+            title: "Git in One Picture",
+            time: "7 min",
+            objective: "Understand the three Git zones and why branches are safe parallel universes.",
+            bites: [
+              {
+                title: "Core concept",
+                text: "Git stores snapshots called commits and lets you create parallel branches.",
+              },
+              {
+                title: "Three zones",
+                text: "Working Directory -> Staging Area -> Repository is the default change flow.",
+              },
+              {
+                title: "Mistake pattern",
+                text: "Most confusion comes from not knowing which zone a file is currently in.",
+              },
+            ],
+            practice: ["git status", "git add <file>", "git commit -m \"checkpoint\""],
+            check: "Can you explain which command moves changes between each zone?",
+          },
+          {
+            id: "daily-five",
+            title: "The 5 Commands You Will Use Every Day",
+            time: "5 min",
+            objective: "Run a reliable daily command loop and complete a first commit.",
+            bites: [
+              {
+                title: "Daily set",
+                text: "git status, git add -p, git commit -m \"message\", git pull, git push.",
+              },
+              {
+                title: "When stuck",
+                text: "Start with git status; it tells you what Git expects next.",
+              },
+            ],
+            practice: [
+              "mkdir hello-git",
+              "cd hello-git",
+              "git init",
+              "echo \"Hello Git\" > notes.txt",
+              "git add notes.txt",
+              "git commit -m \"First commit: add notes\"",
+            ],
+            check: "Can you create one repository and commit from scratch without GUI tools?",
+          },
+          {
+            id: "staging-power",
+            title: "Staging: The Misunderstood Superpower",
+            time: "7 min",
+            objective: "Use staging intentionally to build clean, reviewable commits.",
+            bites: [
+              {
+                title: "Why staging exists",
+                text: "You often edit many things, but should commit one clear change at a time.",
+              },
+              {
+                title: "Best practice",
+                text: "Use git add -p to stage selected lines, not whole files by default.",
+              },
+            ],
+            practice: [
+              "git add app.js",
+              "git add -p",
+              "git status",
+            ],
+            check: "Can you explain the difference between staging a file and staging a hunk?",
+          },
+          {
+            id: "history-undo",
+            title: "History and Undo Without Breaking the Team",
+            time: "8 min",
+            objective: "Choose the right undo method: restore, revert, or reset.",
+            bites: [
+              {
+                title: "Three undo styles",
+                text: "restore (local file), revert (safe shared undo), reset (history rewrite).",
+              },
+              {
+                title: "Team-safe default",
+                text: "Prefer git revert for shared branches to avoid rewriting public history.",
+              },
+            ],
+            practice: [
+              "git log --oneline --graph --decorate --all",
+              "git restore notes.txt",
+              "git revert <commit_sha>",
+            ],
+            check: "Can you state when reset is risky in collaborative branches?",
+          },
+          {
+            id: "branching",
+            title: "Branching (Parallel Universes)",
+            time: "7 min",
+            objective: "Create, switch, and merge feature branches without disturbing main.",
+            bites: [
+              {
+                title: "Workflow",
+                text: "Create feature branch, work there, then merge to main when ready.",
+              },
+              {
+                title: "Mental model",
+                text: "Branches are separate storylines you can merge when complete.",
+              },
+            ],
+            practice: [
+              "git switch -c feature/login",
+              "git switch main",
+              "git merge feature/login",
+            ],
+            check: "Can you describe exactly what merge changes on main?",
+          },
+          {
+            id: "merge-conflicts",
+            title: "Merge Conflicts (Do Not Panic)",
+            time: "6 min",
+            objective: "Resolve conflicts using a calm, repeatable process.",
+            bites: [
+              {
+                title: "Conflict meaning",
+                text: "A conflict means Git needs your decision when two edits overlap.",
+              },
+              {
+                title: "Resolution flow",
+                text: "Pull, inspect markers, edit final truth, stage resolved files, commit.",
+              },
+            ],
+            practice: [
+              "git pull",
+              "git status",
+              "git add <fixed_files>",
+              "git commit",
+            ],
+            check: "After resolving, did you run a quick behavior check before commit?",
+          },
+        ],
+      },
+      {
+        id: "git-pega-map",
+        title: "Module 2: Git and Pega Mapping",
+        summary: "Translate Git concepts to Pega branching, merge, and release work.",
+        lessons: [
+          {
+            id: "ten-commands",
+            title: "10 Commands to Memorize (With Meaning)",
+            time: "9 min",
+            objective: "Memorize high-value commands and understand what each really does.",
+            bites: [
+              {
+                title: "Command memory set",
+                text: "status, add -p, commit, log graph, switch -c, pull --rebase, push -u, merge, revert, restore --staged.",
+              },
+              {
+                title: "Focus point",
+                text: "Do not memorize syntax only; memorize operational meaning and safety level.",
+              },
+            ],
+            practice: [
+              "git log --oneline --graph --decorate --all",
+              "git switch -c feature/x",
+              "git revert <sha>",
+              "git restore --staged <file>",
+            ],
+            check: "Can you explain each command in one short sentence from memory?",
+          },
+          {
+            id: "mapping",
+            title: "Git to Pega Mapping",
+            time: "10 min",
+            objective: "Map file-based Git operations to rule-based Pega operations.",
+            bites: [
+              {
+                title: "Closest mapping",
+                text: "Repo->app rules, Commit->check-in, Branch->branch ruleset, Merge->branch merge, Tag/Release->product/deployment.",
+              },
+              {
+                title: "Key difference",
+                text: "Git merges text lines; Pega merges rule metadata and rule selections.",
+              },
+            ],
+            practice: [
+              "Map one recent Git workflow from your team to equivalent Pega steps.",
+              "List where conflict resolution decisions differ between Git and Pega.",
+            ],
+            check: "Can you clearly explain line merge vs rule merge to a teammate?",
+          },
+          {
+            id: "practical-scenarios",
+            title: "Practical Scenarios (Git vs Pega)",
+            time: "8 min",
+            objective: "Apply concept mapping to real scenarios: same change, hotfix, release.",
+            bites: [
+              {
+                title: "Scenario A",
+                text: "Same file/rule changed by two people: resolve line conflict in Git; choose/reconcile rule in Pega.",
+              },
+              {
+                title: "Scenario B and C",
+                text: "Hotfix branch then merge in Git; patch/branch merge forward in Pega. Tag + pipeline in Git; product rule + deployment pipeline in Pega.",
+              },
+            ],
+            practice: [
+              "Write your team's hotfix flow in Git steps and Pega steps side-by-side.",
+              "Write one release checklist with both Git and Pega terms.",
+            ],
+            check: "Can you defend when to use Git actions versus Pega-native actions?",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "containers-orchestration",
+    title: "Containers & Orchestration",
+    subtitle: "Workbook built from the attached Containers PDF.",
+    sourceLabel: "Source: HeadFirst_Containers_With_Diagrams (1).pdf",
+    modules: [
+      {
+        id: "containers-core",
+        title: "Module 1: Container Foundations",
+        summary: "From containers vs VMs to Docker packaging flow.",
+        lessons: [
+          {
+            id: "containers-not-vm",
+            title: "Containers Are Not Tiny VMs",
+            time: "6 min",
+            objective: "Differentiate container process isolation from VM machine virtualization.",
+            bites: [
+              {
+                title: "Core distinction",
+                text: "A container is an isolated process; a VM is a full machine with guest OS.",
+              },
+              {
+                title: "Why faster",
+                text: "Containers share the host kernel, so startup and resource usage are lighter.",
+              },
+            ],
+            practice: [
+              "docker ps",
+              "docker stats",
+              "Compare startup time of a container vs a VM in your environment.",
+            ],
+            check: "Can you explain where the guest OS exists in VM but not in a container?",
+          },
+          {
+            id: "docker-lunchbox",
+            title: "Docker: The Lunchbox for Your App",
+            time: "7 min",
+            objective: "Use Dockerfile -> image -> container flow correctly.",
+            bites: [
+              {
+                title: "Build vs run",
+                text: "Docker builds images; containers run images.",
+              },
+              {
+                title: "Flow",
+                text: "Dockerfile defines recipe, docker build creates image, docker run starts container.",
+              },
+            ],
+            practice: [
+              "docker build -t my-app:dev .",
+              "docker run --rm --name my-app my-app:dev",
+            ],
+            check: "Can you identify which step changes only image metadata vs running state?",
+          },
+        ],
+      },
+      {
+        id: "kubernetes-openshift",
+        title: "Module 2: Kubernetes, Pods, and OpenShift",
+        summary: "Operate workloads with pods/services and enterprise platform layers.",
+        lessons: [
+          {
+            id: "kubernetes-daycare",
+            title: "Kubernetes: Container Daycare",
+            time: "8 min",
+            objective: "Understand scheduling, self-healing, and scaling behavior in a cluster.",
+            bites: [
+              {
+                title: "What it does",
+                text: "Kubernetes schedules pods, restarts failed ones, scales replicas, and routes traffic.",
+              },
+              {
+                title: "Stable endpoint",
+                text: "Pods can change, but Service DNS stays stable for callers.",
+              },
+            ],
+            practice: [
+              "kubectl get nodes",
+              "kubectl get pods -A",
+              "kubectl get svc -A",
+            ],
+            check: "Can you explain why clients target a Service instead of a Pod IP?",
+          },
+          {
+            id: "pods-unit",
+            title: "Pods: Smallest Deployable Unit",
+            time: "7 min",
+            objective: "Understand single-container pod and sidecar pod patterns.",
+            bites: [
+              {
+                title: "Pod model",
+                text: "A pod often has one container, but can include sidecars that share network/volumes.",
+              },
+              {
+                title: "Roommates pattern",
+                text: "App + sidecar in one pod behave as one operational unit.",
+              },
+            ],
+            practice: [
+              "kubectl describe pod <pod-name>",
+              "kubectl logs <pod-name> -c <container-name>",
+            ],
+            check: "Can you describe what resources are shared between containers in one pod?",
+          },
+          {
+            id: "openshift-enterprise",
+            title: "OpenShift: Kubernetes with Enterprise Features",
+            time: "7 min",
+            objective: "Position OpenShift as Kubernetes plus secure-by-default platform capabilities.",
+            bites: [
+              {
+                title: "Platform layer",
+                text: "OpenShift adds security defaults, developer console, registry, routes, and integrated tooling.",
+              },
+              {
+                title: "One-liner",
+                text: "OpenShift = Kubernetes + secure defaults + enterprise platform features.",
+              },
+            ],
+            practice: [
+              "oc get projects",
+              "oc get routes -A",
+              "oc get pods -A",
+            ],
+            check: "Can you state what OpenShift adds beyond upstream Kubernetes?",
+          },
+          {
+            id: "etc-explainers",
+            title: "Fast Explainers + Cheat Sheet",
+            time: "9 min",
+            objective: "Quickly identify core platform objects and when to use each.",
+            bites: [
+              {
+                title: "Fast terms",
+                text: "Helm, Ingress, Ingress Controller, ConfigMap, Secret, StatefulSet, DaemonSet, HPA, Service Mesh, Operator, Namespace.",
+              },
+              {
+                title: "Cheat sheet",
+                text: "Docker=image build, Container=running image, Kubernetes=runs pods, Service=stable DNS, OpenShift=enterprise Kubernetes.",
+              },
+            ],
+            practice: [
+              "Create your own one-page glossary for these objects in your team context.",
+              "Map one production incident to the object that should have handled it.",
+            ],
+            check: "Can you pick the right object for config, secret, stateful app, and autoscaling?",
+          },
+        ],
+      },
+    ],
+  },
+];
