@@ -3,10 +3,9 @@ export type FourDRecord = {
   drawNo: string;
   prizeCode: "1" | "2" | "3" | "S" | "C";
   digit: string;
-  source: "singaporepools" | "4dinsingapore" | "live4d2u";
 };
 
-export type TotoPick = {
+export type FourDPick = {
   value: string;
   probability: number;
 };
@@ -16,25 +15,14 @@ export type PositionProbability = {
   digits: Array<{ digit: number; probability: number }>;
 };
 
-export type TotoPrediction = {
-  picks: TotoPick[];
+export type FourDPrediction = {
+  picks: FourDPick[];
   positionProbabilities: PositionProbability[];
-};
-
-export type PredictionOptions = {
-  timestamp?: number;
-  randomness?: number;
 };
 
 type FrequencyRow = {
   number: string;
   times: number;
-};
-
-type DrawRow = {
-  drawDate: string;
-  drawNo: string;
-  numbers: string[];
 };
 
 type Candidate = {
@@ -87,7 +75,7 @@ const SGP_TOP_100_FREQUENT_4D: FrequencyRow[] = [
   { number: "8282", times: 22 },
 ];
 
-const SINGAPORE_POOLS_DRAWS: DrawRow[] = [
+const RECENT_4D_DRAWS: Array<{ drawDate: string; drawNo: string; numbers: string[] }> = [
   {
     drawDate: "2026-02-11",
     drawNo: "5443",
@@ -133,9 +121,6 @@ const SINGAPORE_POOLS_DRAWS: DrawRow[] = [
       "3717", "4115", "4439", "5336", "6334", "6399", "6870", "7138", "9339", "9813",
     ],
   },
-];
-
-const FOURD_IN_SINGAPORE_DRAWS: DrawRow[] = [
   {
     drawDate: "2024-04-07",
     drawNo: "5154",
@@ -165,91 +150,36 @@ const FOURD_IN_SINGAPORE_DRAWS: DrawRow[] = [
   },
 ];
 
-// Sampled from Live4D2U SG archives using the same 23-slot structure.
-const LIVE4D2U_DRAWS: DrawRow[] = [
-  {
-    drawDate: "2024-03-31",
-    drawNo: "5151",
-    numbers: [
-      "0042", "2266", "9478",
-      "0116", "1188", "1667", "2471", "2568", "3328", "4333", "5045", "5955", "8813",
-      "0814", "1768", "2078", "2198", "3423", "3633", "5488", "7048", "7915", "8929",
-    ],
-  },
-  {
-    drawDate: "2024-03-30",
-    drawNo: "5150",
-    numbers: [
-      "3654", "5966", "2828",
-      "0648", "1375", "1744", "2085", "3792", "3961", "4534", "6760", "8183", "9606",
-      "0058", "0950", "1675", "2979", "3745", "4292", "4631", "5105", "5740", "7809",
-    ],
-  },
-];
-
-function toRecords(draws: DrawRow[], source: FourDRecord["source"]): FourDRecord[] {
-  const output: FourDRecord[] = [];
-
-  draws.forEach((draw) => {
+function flattenRecords(): FourDRecord[] {
+  const records: FourDRecord[] = [];
+  RECENT_4D_DRAWS.forEach((draw) => {
     draw.numbers.forEach((digit, idx) => {
       let prizeCode: FourDRecord["prizeCode"] = "C";
       if (idx === 0) prizeCode = "1";
       else if (idx === 1) prizeCode = "2";
       else if (idx === 2) prizeCode = "3";
       else if (idx <= 12) prizeCode = "S";
-
-      output.push({
+      records.push({
         drawDate: draw.drawDate,
         drawNo: draw.drawNo,
         prizeCode,
         digit,
-        source,
       });
     });
   });
-
-  return output;
+  return records.sort((a, b) => b.drawDate.localeCompare(a.drawDate));
 }
 
-function dedupeRecords(records: FourDRecord[]): FourDRecord[] {
-  const byKey = new Map<string, FourDRecord>();
-
-  records.forEach((record) => {
-    const key = `${record.drawDate}|${record.drawNo}|${record.prizeCode}|${record.digit}`;
-    if (!byKey.has(key)) {
-      byKey.set(key, record);
-    }
-  });
-
-  return [...byKey.values()].sort((a, b) => b.drawDate.localeCompare(a.drawDate));
-}
-
-const MERGED_RECORDS = dedupeRecords([
-  ...toRecords(SINGAPORE_POOLS_DRAWS, "singaporepools"),
-  ...toRecords(FOURD_IN_SINGAPORE_DRAWS, "4dinsingapore"),
-  ...toRecords(LIVE4D2U_DRAWS, "live4d2u"),
-]);
-
-const DRAW_RECENCY: Map<string, number> = (() => {
-  const byDraw = new Map<string, number>();
-  const orderedDraws = [...new Set(MERGED_RECORDS.map((row) => `${row.drawDate}|${row.drawNo}`))];
-  const total = orderedDraws.length;
-
-  orderedDraws.forEach((drawKey, index) => {
-    byDraw.set(drawKey, total - index);
-  });
-
-  return byDraw;
-})();
+const EMBEDDED_RECORDS = flattenRecords();
 
 function scoreNumberMap(records: FourDRecord[]): Map<string, number> {
   const map = new Map<string, number>();
+  const latestWeight = RECENT_4D_DRAWS.length;
 
   records.forEach((row) => {
-    const drawKey = `${row.drawDate}|${row.drawNo}`;
-    const recency = DRAW_RECENCY.get(drawKey) ?? 0;
-    const sourceBonus = row.source === "singaporepools" ? 0.2 : 0;
-    const score = PRIZE_WEIGHTS[row.prizeCode] + recency * 0.22 + sourceBonus;
+    const drawIndex = RECENT_4D_DRAWS.findIndex((d) => d.drawNo === row.drawNo);
+    const recency = drawIndex >= 0 ? latestWeight - drawIndex : 0;
+    const score = PRIZE_WEIGHTS[row.prizeCode] + recency * 0.22;
     map.set(row.digit, (map.get(row.digit) ?? 0) + score);
   });
 
@@ -264,7 +194,7 @@ function scorePositionDigits(records: FourDRecord[]): number[][] {
   const matrix = Array.from({ length: 4 }, () => Array.from({ length: 10 }, () => 0));
 
   records.forEach((row) => {
-    const base = PRIZE_WEIGHTS[row.prizeCode] + (row.source === "singaporepools" ? 0.1 : 0);
+    const base = PRIZE_WEIGHTS[row.prizeCode];
     row.digit.split("").forEach((char, idx) => {
       matrix[idx][Number(char)] += base;
     });
@@ -312,12 +242,9 @@ function buildCandidates(records: FourDRecord[]): Candidate[] {
   return candidates.sort((a, b) => b.score - a.score);
 }
 
-function weightedPickWithRng(
-  candidates: Array<{ value: string; probability: number }>,
-  rng: () => number,
-): string {
+function weightedPick(candidates: Array<{ value: string; probability: number }>): string {
   const total = candidates.reduce((sum, row) => sum + row.probability, 0);
-  let target = rng() * total;
+  let target = Math.random() * total;
   for (const row of candidates) {
     target -= row.probability;
     if (target <= 0) {
@@ -327,57 +254,18 @@ function weightedPickWithRng(
   return candidates[candidates.length - 1].value;
 }
 
-function createSeededRng(seed: number): () => number {
-  let state = seed >>> 0;
-  return () => {
-    state += 0x6d2b79f5;
-    let t = state;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function applyRandomness(
-  normalized: Array<{ value: string; probability: number }>,
-  rng: () => number,
-  randomness: number,
-): Array<{ value: string; probability: number }> {
-  if (randomness <= 0) {
-    return normalized;
-  }
-
-  const jittered = normalized.map((row) => {
-    const jitter = 1 + (rng() * 2 - 1) * randomness;
-    return {
-      value: row.value,
-      probability: Math.max(0.0000001, row.probability * jitter),
-    };
-  });
-
-  const total = jittered.reduce((sum, row) => sum + row.probability, 0);
-  return jittered.map((row) => ({
-    value: row.value,
-    probability: row.probability / total,
-  }));
-}
-
-export function getPrediction(count = 5, options: PredictionOptions = {}): TotoPrediction {
-  const ranked = buildCandidates(MERGED_RECORDS).slice(0, 800);
+export function getPrediction(count = 5): FourDPrediction {
+  const ranked = buildCandidates(EMBEDDED_RECORDS).slice(0, 800);
   const total = ranked.reduce((sum, row) => sum + row.score, 0);
   const normalized = ranked.map((row) => ({ value: row.value, probability: row.score / total }));
-  const seed = options.timestamp ?? Date.now();
-  const randomness = Math.max(0, Math.min(1, options.randomness ?? 0.2));
-  const rng = createSeededRng(seed);
-  const weightedPool = applyRandomness(normalized, rng, randomness);
 
-  const picks: TotoPick[] = [];
+  const picks: FourDPick[] = [];
   const used = new Set<string>();
-  const mutable = [...weightedPool];
+  const mutable = [...normalized];
   const size = Math.max(1, Math.min(count, 10));
 
   while (picks.length < size && mutable.length > 0) {
-    const value = weightedPickWithRng(mutable, rng);
+    const value = weightedPick(mutable);
     const idx = mutable.findIndex((item) => item.value === value);
     if (idx >= 0) {
       const [row] = mutable.splice(idx, 1);
@@ -390,53 +278,47 @@ export function getPrediction(count = 5, options: PredictionOptions = {}): TotoP
 
   return {
     picks,
-    positionProbabilities: normalizePositionProbabilities(scorePositionDigits(MERGED_RECORDS)),
+    positionProbabilities: normalizePositionProbabilities(scorePositionDigits(EMBEDDED_RECORDS)),
   };
 }
 
-export function getTotoPredictorSources(): { label: string; url: string }[] {
+export function getEmbeddedRecordsSummary(): {
+  totalRows: number;
+  uniqueNumbers: number;
+  dateFrom: string;
+  dateTo: string;
+} {
+  const unique = new Set(EMBEDDED_RECORDS.map((row) => row.digit));
+  const sortedDates = [...new Set(EMBEDDED_RECORDS.map((row) => row.drawDate))].sort();
+  return {
+    totalRows: EMBEDDED_RECORDS.length,
+    uniqueNumbers: unique.size,
+    dateFrom: sortedDates[0] ?? "",
+    dateTo: sortedDates[sortedDates.length - 1] ?? "",
+  };
+}
+
+export function getEmbeddedRecordsPreview(limit = 300): FourDRecord[] {
+  return EMBEDDED_RECORDS.slice(0, Math.max(1, Math.min(limit, EMBEDDED_RECORDS.length)));
+}
+
+export function get4DPredictorSources(): { label: string; url: string }[] {
   return [
     {
       label: "Singapore Pools Top 100 frequently drawn 4D numbers",
       url: "https://www.singaporepools.com.sg/en/product/Pages/4d_t100fd4dn.aspx",
     },
     {
-      label: "Singapore Pools check past winning numbers",
+      label: "Singapore Pools check past winning numbers (from May 1986)",
       url: "https://www.singaporepools.com.sg/en/product/pages/check_past_winning_numbers.aspx",
     },
     {
-      label: "4D in Singapore past 4D results",
+      label: "4dinsingapore past 4D results",
       url: "https://4dinsingapore.com/past-4d-results/",
     },
     {
-      label: "Live4D2U Singapore 4D archives",
-      url: "https://www.live4d2u.com/",
+      label: "Live4D2U Singapore 4D latest/results listing",
+      url: "https://live4d2u.com/singapore/4d/",
     },
   ];
-}
-
-export function getMergedDatasetSummary(): {
-  totalRows: number;
-  uniqueNumbers: number;
-  totalDraws: number;
-  sources: Record<FourDRecord["source"], number>;
-} {
-  const uniqueNumbers = new Set(MERGED_RECORDS.map((row) => row.digit)).size;
-  const drawKeys = new Set(MERGED_RECORDS.map((row) => `${row.drawDate}|${row.drawNo}`)).size;
-  const sources: Record<FourDRecord["source"], number> = {
-    singaporepools: 0,
-    "4dinsingapore": 0,
-    live4d2u: 0,
-  };
-
-  MERGED_RECORDS.forEach((row) => {
-    sources[row.source] += 1;
-  });
-
-  return {
-    totalRows: MERGED_RECORDS.length,
-    uniqueNumbers,
-    totalDraws: drawKeys,
-    sources,
-  };
 }

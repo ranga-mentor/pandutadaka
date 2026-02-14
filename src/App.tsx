@@ -89,7 +89,7 @@ function App() {
           onClick={() => setMode("toto")}
           type="button"
         >
-          Toto Predictor
+          4D Predictor
         </button>
       </section>
 
