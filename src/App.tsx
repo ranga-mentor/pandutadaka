@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { trackEvent } from "./analytics";
 import NricTools from "./components/NricTools";
+import TotoPredictor from "./components/TotoPredictor";
 import { learningTracks } from "./data/learningContent";
 import "./App.css";
 
@@ -20,7 +21,7 @@ function GitZonesDiagram() {
 }
 
 function App() {
-  const [mode, setMode] = useState<"workbook" | "nric">("workbook");
+  const [mode, setMode] = useState<"workbook" | "nric" | "toto">("workbook");
   const [trackIndex, setTrackIndex] = useState(0);
   const [lessonIndex, setLessonIndex] = useState(0);
 
@@ -83,9 +84,17 @@ function App() {
         >
           NRIC Tools
         </button>
+        <button
+          className={mode === "toto" ? "is-active" : ""}
+          onClick={() => setMode("toto")}
+          type="button"
+        >
+          Toto Predictor
+        </button>
       </section>
 
       {mode === "nric" && <NricTools />}
+      {mode === "toto" && <TotoPredictor />}
 
       {mode === "workbook" && <section className="track-switcher">
         {learningTracks.map((track, index) => (

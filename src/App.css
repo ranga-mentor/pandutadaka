@@ -409,6 +409,60 @@
   margin: 0 0 0.8rem;
 }
 
+.toto-page {
+  display: grid;
+  gap: 1rem;
+  margin: 0.5rem 0 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.toto-hero {
+  background: linear-gradient(130deg, #ffe5cc 0%, #fff7d8 100%);
+}
+
+.toto-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.toto-picks {
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.toto-picks li {
+  border: 2px solid #ff7f32;
+  border-radius: 8px;
+  background: #fff1e5;
+  padding: 0.55rem 0.25rem;
+  text-align: center;
+}
+
+.toto-picks code {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.small-note {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-top: 0.6rem;
+}
+
+.source-list {
+  margin: 0.3rem 0 0;
+}
+
+.source-list li + li {
+  margin-top: 0.35rem;
+}
+
 .card-background {
   position: absolute;
   inset: 0;
@@ -538,6 +592,10 @@
 
   .nric-tools {
     grid-template-columns: 1fr;
+  }
+
+  .toto-picks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .card-background {
