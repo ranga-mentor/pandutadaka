@@ -442,11 +442,41 @@
   background: #fff1e5;
   padding: 0.55rem 0.25rem;
   text-align: center;
+  display: grid;
+  gap: 0.25rem;
 }
 
 .toto-picks code {
   font-size: 1.2rem;
   font-weight: 700;
+}
+
+.toto-picks small {
+  font-size: 0.8rem;
+  color: #8b4518;
+}
+
+.position-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.position-card {
+  border: 1px solid #f4b081;
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: #fff9f2;
+}
+
+.position-card h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+
+.position-card ul {
+  margin: 0;
+  padding-left: 1rem;
 }
 
 .small-note {
@@ -595,6 +625,10 @@
   }
 
   .toto-picks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .position-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
