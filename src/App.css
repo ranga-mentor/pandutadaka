@@ -418,6 +418,43 @@
   z-index: 1;
 }
 
+.java-page {
+  display: grid;
+  gap: 1rem;
+  margin: 0.5rem 0 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.java-hero {
+  background: linear-gradient(130deg, #e7f6ff 0%, #f7fbff 100%);
+}
+
+.java-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.java-release h3 {
+  margin: 0;
+}
+
+.java-release small {
+  display: block;
+  margin-top: 0.3rem;
+  color: #555;
+}
+
+.java-release ul {
+  margin: 0.65rem 0 0;
+  padding-left: 1rem;
+}
+
+.java-release li + li {
+  margin-top: 0.4rem;
+}
+
 .toto-hero {
   background: linear-gradient(130deg, #ffe5cc 0%, #fff7d8 100%);
 }
@@ -631,6 +668,10 @@
 
   .position-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .java-grid {
+    grid-template-columns: 1fr;
   }
 
   .card-background {
