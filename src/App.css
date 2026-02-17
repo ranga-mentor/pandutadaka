@@ -418,6 +418,60 @@
   z-index: 1;
 }
 
+.sg-toto-page {
+  display: grid;
+  gap: 1rem;
+  margin: 0.5rem 0 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.sg-toto-hero {
+  background: linear-gradient(130deg, #e5fff6 0%, #f4fffb 100%);
+}
+
+.sg-toto-sets {
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.sg-toto-sets li {
+  border: 2px solid #1f9d8b;
+  border-radius: 8px;
+  background: #e9fffb;
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.sg-toto-sets code {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.sg-toto-balls {
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.sg-toto-balls li {
+  border: 2px solid #ff7f32;
+  border-radius: 8px;
+  background: #fff1e5;
+  padding: 0.45rem 0.25rem;
+  text-align: center;
+  display: grid;
+  gap: 0.2rem;
+}
+
 .java-page {
   display: grid;
   gap: 1rem;
@@ -664,6 +718,14 @@
 
   .toto-picks {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sg-toto-sets {
+    grid-template-columns: 1fr;
+  }
+
+  .sg-toto-balls {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .position-grid {

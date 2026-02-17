@@ -3,6 +3,7 @@ import { trackEvent } from "./analytics";
 import NricTools from "./components/NricTools";
 import TotoPredictor from "./components/TotoPredictor";
 import JavaFeaturesPage from "./components/JavaFeaturesPage";
+import SingaporeTotoPage from "./components/SingaporeTotoPage";
 import { learningTracks } from "./data/learningContent";
 import "./App.css";
 
@@ -22,7 +23,7 @@ function GitZonesDiagram() {
 }
 
 function App() {
-  const [mode, setMode] = useState<"workbook" | "nric" | "toto" | "java">("workbook");
+  const [mode, setMode] = useState<"workbook" | "nric" | "toto" | "sg-toto" | "java">("workbook");
   const [trackIndex, setTrackIndex] = useState(0);
   const [lessonIndex, setLessonIndex] = useState(0);
 
@@ -93,6 +94,13 @@ function App() {
           4D Predictor
         </button>
         <button
+          className={mode === "sg-toto" ? "is-active" : ""}
+          onClick={() => setMode("sg-toto")}
+          type="button"
+        >
+          Toto Predictor
+        </button>
+        <button
           className={mode === "java" ? "is-active" : ""}
           onClick={() => setMode("java")}
           type="button"
@@ -103,6 +111,7 @@ function App() {
 
       {mode === "nric" && <NricTools />}
       {mode === "toto" && <TotoPredictor />}
+      {mode === "sg-toto" && <SingaporeTotoPage />}
       {mode === "java" && <JavaFeaturesPage />}
 
       {mode === "workbook" && <section className="track-switcher">
