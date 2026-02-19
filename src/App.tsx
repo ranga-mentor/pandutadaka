@@ -1,12 +1,55 @@
 import { useEffect, useMemo, useState } from "react";
 import { CssBaseline, IconButton, ThemeProvider, createTheme } from "@mui/material";
 import { trackEvent } from "./analytics";
-import NricTools from "./components/NricTools";
-import TotoPredictor from "./components/TotoPredictor";
 import JavaFeaturesPage from "./components/JavaFeaturesPage";
+import NricTools from "./components/NricTools";
 import SingaporeTotoPage from "./components/SingaporeTotoPage";
+import TotoPredictor from "./components/TotoPredictor";
 import { learningTracks } from "./data/learningContent";
 import "./App.css";
+
+type Mode = "home" | "workbook" | "id-tools" | "numbers" | "java";
+
+type FeatureCard = {
+  title: string;
+  description: string;
+  action: string;
+  mode: Mode;
+  image: string;
+};
+
+const featureCards: FeatureCard[] = [
+  {
+    title: "Workbook Tracks",
+    description: "Structured chapters with practice and quick checks for guided learning.",
+    action: "Open Workbook",
+    mode: "workbook",
+    image:
+      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    title: "ID Tools Studio",
+    description: "Validate and generate Singapore, Malaysia, and Hong Kong IDs in one place.",
+    action: "Open ID Tools",
+    mode: "id-tools",
+    image: "/id-tools-neon-theme.svg",
+  },
+  {
+    title: "🇸🇬 4D & Toto Lab",
+    description: "Use probability-driven predictors for Singapore 4D and Toto as one toolkit.",
+    action: "Open Number Lab",
+    mode: "numbers",
+    image: "/number-lab-lottery.svg",
+  },
+  {
+    title: "Java Feature Explorer",
+    description: "Review practical updates from Java 11 through Java 21 in a single release map.",
+    action: "Open Java",
+    mode: "java",
+    image:
+      "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=80",
+  },
+];
 
 function GitZonesDiagram() {
   return (
@@ -24,8 +67,9 @@ function GitZonesDiagram() {
 }
 
 function App() {
-  const [mode, setMode] = useState<"workbook" | "nric" | "toto" | "sg-toto" | "java">("workbook");
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
+  const [mode, setMode] = useState<Mode>("home");
+  const [numbersMode, setNumbersMode] = useState<"4d" | "toto">("4d");
+  const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
     if (typeof window === "undefined") {
       return "light";
     }
@@ -35,36 +79,6 @@ function App() {
   const [lessonIndex, setLessonIndex] = useState(0);
 
   const activeTrack = learningTracks[trackIndex];
-  const muiTheme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: theme,
-          primary: {
-            main: theme === "light" ? "#1865f2" : "#79a9ff",
-          },
-          secondary: {
-            main: theme === "light" ? "#0a8f5b" : "#3bc38f",
-          },
-          background: {
-            default: theme === "light" ? "#f7f8fa" : "#0f1728",
-            paper: theme === "light" ? "#ffffff" : "#17233a",
-          },
-          text: {
-            primary: theme === "light" ? "#1f2937" : "#e9eef9",
-            secondary: theme === "light" ? "#5b6472" : "#afbdd8",
-          },
-        },
-        shape: {
-          borderRadius: 12,
-        },
-        typography: {
-          fontFamily: '"Lato", "Noto Sans", "Segoe UI", sans-serif',
-        },
-      }),
-    [theme],
-  );
-
   const flatLessons = useMemo(
     () =>
       activeTrack.modules.flatMap((module) =>
@@ -72,19 +86,35 @@ function App() {
       ),
     [activeTrack],
   );
-
   const activeLesson = flatLessons[lessonIndex];
 
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    window.localStorage.setItem("theme", theme);
-  }, [theme]);
+  const muiTheme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: themeMode,
+          primary: { main: themeMode === "light" ? "#0056d2" : "#8cb5ff" },
+          secondary: { main: themeMode === "light" ? "#0a8f5b" : "#4fd69f" },
+          background: {
+            default: themeMode === "light" ? "#f5f7fa" : "#0f1728",
+            paper: themeMode === "light" ? "#ffffff" : "#17233a",
+          },
+        },
+        shape: { borderRadius: 12 },
+        typography: {
+          fontFamily: '"Lato", "Noto Sans", "Segoe UI", sans-serif',
+        },
+      }),
+    [themeMode],
+  );
 
   useEffect(() => {
-    if (mode !== "workbook") {
-      return;
-    }
-    if (!activeLesson) {
+    document.documentElement.setAttribute("data-theme", themeMode);
+    window.localStorage.setItem("theme", themeMode);
+  }, [themeMode]);
+
+  useEffect(() => {
+    if (mode !== "workbook" || !activeLesson) {
       return;
     }
     trackEvent("lesson_view", {
@@ -95,179 +125,227 @@ function App() {
   }, [activeLesson, activeTrack.id, mode]);
 
   if (!activeLesson) {
-    return <main className="app-shell">No lessons available.</main>;
+    return <main className="ca-shell">No lessons available.</main>;
   }
 
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
-      <main className="app-shell">
-      <div className="card-background" aria-hidden="true">
-        <span className="bg-card bg-card-1" />
-        <span className="bg-card bg-card-2" />
-        <span className="bg-card bg-card-3" />
-        <span className="bg-card bg-card-4" />
-        <span className="bg-card bg-card-5" />
-      </div>
-
-      <header className="topbar">
-        <div className="topbar-content">
-          <div>
-            <p className="eyebrow">Learning Workbook</p>
-            <h1>Byte Learning</h1>
-          </div>
-          <IconButton
-            className={`theme-toggle ${theme === "dark" ? "is-dark" : ""}`}
-            onClick={() => setTheme((current) => (current === "light" ? "dark" : "light"))}
-            aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-            title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-          >
-            <span aria-hidden="true" className="theme-toggle-icon sun">☀</span>
-            <span aria-hidden="true" className="theme-toggle-thumb" />
-            <span aria-hidden="true" className="theme-toggle-icon moon">☾</span>
-          </IconButton>
-        </div>
-      </header>
-
-      <section className="mode-switcher">
-        <button
-          className={mode === "workbook" ? "is-active" : ""}
-          onClick={() => setMode("workbook")}
-          type="button"
-        >
-          Workbook
-        </button>
-        <button
-          className={mode === "nric" ? "is-active" : ""}
-          onClick={() => setMode("nric")}
-          type="button"
-        >
-          NRIC Tools
-        </button>
-        <button
-          className={mode === "toto" ? "is-active" : ""}
-          onClick={() => setMode("toto")}
-          type="button"
-        >
-          4D Predictor
-        </button>
-        <button
-          className={mode === "sg-toto" ? "is-active" : ""}
-          onClick={() => setMode("sg-toto")}
-          type="button"
-        >
-          Toto Predictor
-        </button>
-        <button
-          className={mode === "java" ? "is-active" : ""}
-          onClick={() => setMode("java")}
-          type="button"
-        >
-          Java 11-21
-        </button>
-      </section>
-
-      {mode === "nric" && <NricTools />}
-      {mode === "toto" && <TotoPredictor />}
-      {mode === "sg-toto" && <SingaporeTotoPage />}
-      {mode === "java" && <JavaFeaturesPage />}
-
-      {mode === "workbook" && <section className="track-switcher">
-        {learningTracks.map((track, index) => (
+      <main className="ca-shell">
+        <header className="ca-header">
           <button
-            key={track.id}
-            className={index === trackIndex ? "is-active" : ""}
-            onClick={() => {
-              setTrackIndex(index);
-              setLessonIndex(0);
-            }}
+            className={`ca-brand ca-brand-link ${mode === "home" ? "is-active" : ""}`}
+            onClick={() => setMode("home")}
             type="button"
+            aria-label="Go to Learning Lab"
           >
-            {track.title}
+            <span className="ca-brand-dot" />
+            <strong>Learning Lab</strong>
           </button>
-        ))}
-      </section>}
+          <nav className="ca-nav" aria-label="Primary sections">
+            <button className={mode === "workbook" ? "is-active" : ""} onClick={() => setMode("workbook")} type="button">
+              Workbook
+            </button>
+            <button className={mode === "id-tools" ? "is-active" : ""} onClick={() => setMode("id-tools")} type="button">
+              ID Tools
+            </button>
+            <button className={mode === "numbers" ? "is-active" : ""} onClick={() => setMode("numbers")} type="button">
+              <span className="sg-icon" aria-hidden="true">🇸🇬</span> Number Lab
+            </button>
+            <button className={mode === "java" ? "is-active" : ""} onClick={() => setMode("java")} type="button">
+              <span className="java-icon" aria-hidden="true">☕</span> Java
+            </button>
+          </nav>
+          <div className="ca-header-actions">
+            <input className="ca-search" type="search" placeholder="Search courses or tools" />
+            <IconButton
+              className={`theme-toggle ${themeMode === "dark" ? "is-dark" : ""}`}
+              onClick={() =>
+                setThemeMode((current) => (current === "light" ? "dark" : "light"))
+              }
+              aria-label={themeMode === "light" ? "Switch to dark mode" : "Switch to light mode"}
+            >
+              <span aria-hidden="true" className="theme-toggle-icon sun">☀</span>
+              <span aria-hidden="true" className="theme-toggle-thumb" />
+              <span aria-hidden="true" className="theme-toggle-icon moon">☾</span>
+            </IconButton>
+          </div>
+        </header>
 
-      {mode === "workbook" && <div className="layout">
-        <aside className="sidebar">
-          <h2>{activeTrack.title}</h2>
-          <p>{activeTrack.subtitle}</p>
-          <small>{activeTrack.sourceLabel}</small>
-          <nav aria-label="Lesson navigation">
-            <ol>
-              {flatLessons.map((entry, index) => (
-                <li key={entry.lesson.id}>
+        {mode === "home" && (
+          <>
+            <section className="ca-section">
+              <div className="ca-section-head">
+                <h2>Featured Learning Blocks</h2>
+              </div>
+              <div className="ca-card-grid">
+                {featureCards.map((card) => (
+                  <article key={card.title} className={`ca-card ${card.mode === "java" ? "is-java" : ""}`}>
+                    <img src={card.image} alt={card.title} />
+                    <div className="ca-card-body">
+                      <h3>
+                        {card.mode === "java" && <span className="java-icon" aria-hidden="true">☕</span>}
+                        {card.title}
+                      </h3>
+                      <p className="ca-card-meta">{card.description}</p>
+                      <button type="button" className="ca-secondary-btn" onClick={() => setMode(card.mode)}>
+                        {card.action}
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
+
+        {mode === "workbook" && (
+          <section className="workspace-shell">
+            <div className="workspace-head">
+              <h2>{activeTrack.title}</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <section className="track-switcher">
+              {learningTracks.map((track, index) => (
+                <button
+                  key={track.id}
+                  className={index === trackIndex ? "is-active" : ""}
+                  onClick={() => {
+                    setTrackIndex(index);
+                    setLessonIndex(0);
+                  }}
+                  type="button"
+                >
+                  {track.title}
+                </button>
+              ))}
+            </section>
+            <div className="layout">
+              <aside className="sidebar">
+                <h2>{activeTrack.title}</h2>
+                <p>{activeTrack.subtitle}</p>
+                <small>{activeTrack.sourceLabel}</small>
+                <nav aria-label="Lesson navigation">
+                  <ol>
+                    {flatLessons.map((entry, index) => (
+                      <li key={entry.lesson.id}>
+                        <button
+                          className={index === lessonIndex ? "is-current" : ""}
+                          onClick={() => setLessonIndex(index)}
+                          type="button"
+                        >
+                          {index + 1}. {entry.lesson.title}
+                        </button>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              </aside>
+
+              <article className="content">
+                <h2 className="chapter-title">Chapter {lessonIndex + 1} - {activeLesson.lesson.title}</h2>
+                <p className="chapter-intro">{activeLesson.lesson.objective}</p>
+                <p className="meta">{activeLesson.moduleTitle} • {activeLesson.lesson.time}</p>
+
+                {activeLesson.lesson.id === "zones" && <GitZonesDiagram />}
+
+                <section className="bite-grid">
+                  {activeLesson.lesson.bites.map((bite) => (
+                    <div key={bite.title} className="bite-card">
+                      <h3>{bite.title}</h3>
+                      <p>{bite.text}</p>
+                    </div>
+                  ))}
+                </section>
+
+                {activeLesson.lesson.practice && (
+                  <section className="practice">
+                    <h3>Try Now</h3>
+                    <pre>
+                      {activeLesson.lesson.practice.map((line) => `${line}\n`).join("")}
+                    </pre>
+                  </section>
+                )}
+
+                {activeLesson.lesson.check && (
+                  <section className="brain-note">
+                    <h3>Brain note</h3>
+                    <p>{activeLesson.lesson.check}</p>
+                  </section>
+                )}
+
+                <div className="lesson-controls">
                   <button
-                    className={index === lessonIndex ? "is-current" : ""}
-                    onClick={() => setLessonIndex(index)}
+                    disabled={lessonIndex === 0}
+                    onClick={() => setLessonIndex((index) => Math.max(index - 1, 0))}
                     type="button"
                   >
-                    {index + 1}. {entry.lesson.title}
+                    Previous
                   </button>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        </aside>
-
-        <article className="content">
-          <h2 className="chapter-title">Chapter {lessonIndex + 1} - {activeLesson.lesson.title}</h2>
-          <p className="chapter-intro">{activeLesson.lesson.objective}</p>
-          <p className="meta">{activeLesson.moduleTitle} • {activeLesson.lesson.time}</p>
-
-          {activeLesson.lesson.id === "zones" && <GitZonesDiagram />}
-
-          <section className="bite-grid">
-            {activeLesson.lesson.bites.map((bite) => (
-              <div key={bite.title} className="bite-card">
-                <h3>{bite.title}</h3>
-                <p>{bite.text}</p>
-              </div>
-            ))}
+                  <button onClick={() => setLessonIndex(0)} type="button">
+                    Restart Track
+                  </button>
+                  <button
+                    disabled={lessonIndex === flatLessons.length - 1}
+                    onClick={() =>
+                      setLessonIndex((index) => Math.min(index + 1, flatLessons.length - 1))
+                    }
+                    type="button"
+                  >
+                    Next
+                  </button>
+                </div>
+              </article>
+            </div>
           </section>
+        )}
 
-          {activeLesson.lesson.practice && (
-            <section className="practice">
-              <h3>Try Now</h3>
-              <pre>
-                {activeLesson.lesson.practice.map((line) => `${line}\n`).join("")}
-              </pre>
+        {mode === "id-tools" && (
+          <section className="workspace-shell">
+            <div className="workspace-head">
+              <h2>ID Tools</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <NricTools />
+          </section>
+        )}
+
+        {mode === "numbers" && (
+          <section className="workspace-shell">
+            <div className="workspace-head">
+              <h2>Number Lab</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <section className="country-switcher">
+              <button
+                className={numbersMode === "4d" ? "is-active" : ""}
+                onClick={() => setNumbersMode("4d")}
+                type="button"
+              >
+                <span className="sg-icon" aria-hidden="true">🇸🇬</span> 4D Predictor
+              </button>
+              <button
+                className={numbersMode === "toto" ? "is-active" : ""}
+                onClick={() => setNumbersMode("toto")}
+                type="button"
+              >
+                <span className="sg-icon" aria-hidden="true">🇸🇬</span> Toto Predictor
+              </button>
             </section>
-          )}
+            {numbersMode === "4d" && <TotoPredictor />}
+            {numbersMode === "toto" && <SingaporeTotoPage />}
+          </section>
+        )}
 
-          {activeLesson.lesson.check && (
-            <section className="brain-note">
-              <h3>Brain note</h3>
-              <p>{activeLesson.lesson.check}</p>
-            </section>
-          )}
-
-          <div className="lesson-controls">
-            <button
-              disabled={lessonIndex === 0}
-              onClick={() => setLessonIndex((index) => Math.max(index - 1, 0))}
-              type="button"
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => setLessonIndex(0)}
-              type="button"
-            >
-              Restart Track
-            </button>
-            <button
-              disabled={lessonIndex === flatLessons.length - 1}
-              onClick={() =>
-                setLessonIndex((index) => Math.min(index + 1, flatLessons.length - 1))
-              }
-              type="button"
-            >
-              Next
-            </button>
-          </div>
-        </article>
-      </div>}
+        {mode === "java" && (
+          <section className="workspace-shell">
+            <div className="workspace-head">
+              <h2>Java Learning</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <JavaFeaturesPage />
+          </section>
+        )}
       </main>
     </ThemeProvider>
   );

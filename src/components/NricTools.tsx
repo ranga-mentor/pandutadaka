@@ -102,33 +102,41 @@ export default function NricTools() {
 
   return (
     <>
-      <section className="country-switcher">
+      <section className="id-tools-hero">
+        <h2>ID Tools Studio</h2>
+        <p>Pick a country to validate or generate identity format examples.</p>
+      </section>
+
+      <section className="country-switcher id-country-switcher">
         <button
           className={countryPage === "sg" ? "is-active" : ""}
           onClick={() => setCountryPage("sg")}
           type="button"
         >
-          Singapore
+          <span className="country-flag" aria-hidden="true">🇸🇬</span>
+          <span>Singapore</span>
         </button>
         <button
           className={countryPage === "my" ? "is-active" : ""}
           onClick={() => setCountryPage("my")}
           type="button"
         >
-          Malaysia
+          <span className="country-flag" aria-hidden="true">🇲🇾</span>
+          <span>Malaysia</span>
         </button>
         <button
           className={countryPage === "hk" ? "is-active" : ""}
           onClick={() => setCountryPage("hk")}
           type="button"
         >
-          Hong Kong
+          <span className="country-flag" aria-hidden="true">🇭🇰</span>
+          <span>Hong Kong</span>
         </button>
       </section>
 
       {countryPage === "sg" && (
         <section className="nric-tools">
-          <article className="tool-card">
+          <article className="tool-card id-tool-card">
             <h2>Singapore NRIC/FIN Validator</h2>
             <p>Checks format and checksum for S, T, F, G, and M series.</p>
             <label htmlFor="nric-input">NRIC/FIN value</label>
@@ -155,7 +163,7 @@ export default function NricTools() {
             )}
           </article>
 
-          <article className="tool-card">
+          <article className="tool-card id-tool-card">
             <h2>Singapore NRIC/FIN Generator</h2>
             <p>Generates one random value with correct checksum (test/demo use only).</p>
             <button
@@ -208,7 +216,7 @@ export default function NricTools() {
 
       {countryPage === "my" && (
         <section className="nric-tools">
-          <article className="tool-card">
+          <article className="tool-card id-tool-card">
             <h2>Malaysia MyKad Validator</h2>
             <p>Checks format and basic date/state structure.</p>
             <label htmlFor="mykad-input">MyKad value</label>
@@ -235,7 +243,7 @@ export default function NricTools() {
             )}
           </article>
 
-          <article className="tool-card">
+          <article className="tool-card id-tool-card">
             <h2>Malaysia MyKad Generator</h2>
             <p>Generates one sample MyKad style ID (YYMMDD-PB-####).</p>
             <button
@@ -274,7 +282,7 @@ export default function NricTools() {
 
       {countryPage === "hk" && (
         <section className="nric-tools">
-          <article className="tool-card">
+          <article className="tool-card id-tool-card">
             <h2>Hong Kong HKID Validator</h2>
             <p>Checks format and checksum for one/two-letter HKID values.</p>
             <label htmlFor="hkid-input">HKID value</label>
@@ -301,7 +309,7 @@ export default function NricTools() {
             )}
           </article>
 
-          <article className="tool-card">
+          <article className="tool-card id-tool-card">
             <h2>Hong Kong HKID Generator</h2>
             <p>Generates one sample HKID style value with checksum.</p>
             <button

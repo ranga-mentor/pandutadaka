@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Singapore 4D and Toto lottery style illustration">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f294a"/>
+      <stop offset="55%" stop-color="#114d78"/>
+      <stop offset="100%" stop-color="#1b8b6a"/>
+    </linearGradient>
+    <linearGradient id="ticket" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f7ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#00142a" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="700" fill="url(#bg)"/>
+
+  <g opacity="0.25">
+    <circle cx="130" cy="90" r="80" fill="#fff"/>
+    <circle cx="1080" cy="590" r="120" fill="#fff"/>
+    <circle cx="1040" cy="130" r="60" fill="#fff"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="120" y="130" width="420" height="430" rx="26" fill="url(#ticket)"/>
+    <circle cx="120" cy="220" r="18" fill="#0f294a"/>
+    <circle cx="540" cy="380" r="18" fill="#0f294a"/>
+    <text x="170" y="210" fill="#0f294a" font-family="Lato, Arial, sans-serif" font-size="42" font-weight="700">4D Predictor</text>
+    <text x="170" y="255" fill="#3b5677" font-family="Lato, Arial, sans-serif" font-size="24">Singapore style number picks</text>
+
+    <g fill="#0f294a" font-family="Lato, Arial, sans-serif" font-size="44" font-weight="800">
+      <text x="170" y="335">1 9 3 7</text>
+      <text x="170" y="395">4 4 2 0</text>
+      <text x="170" y="455">8 6 1 5</text>
+    </g>
+    <rect x="170" y="490" width="300" height="8" rx="4" fill="#b8c8db"/>
+    <rect x="170" y="515" width="220" height="8" rx="4" fill="#d4deea"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="640" y="130" width="440" height="210" rx="24" fill="#fff7ea"/>
+    <text x="690" y="205" fill="#7a3d0d" font-family="Lato, Arial, sans-serif" font-size="44" font-weight="800">TOTO</text>
+    <text x="690" y="248" fill="#9a673f" font-family="Lato, Arial, sans-serif" font-size="24">6 numbers + additional</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(680 390)">
+      <circle cx="0" cy="0" r="54" fill="#ffd266"/>
+      <text x="-15" y="14" fill="#7a3d0d" font-family="Lato, Arial, sans-serif" font-size="42" font-weight="800">7</text>
+    </g>
+    <g transform="translate(790 470)">
+      <circle cx="0" cy="0" r="54" fill="#ff9f68"/>
+      <text x="-16" y="14" fill="#7a2f00" font-family="Lato, Arial, sans-serif" font-size="42" font-weight="800">2</text>
+    </g>
+    <g transform="translate(900 390)">
+      <circle cx="0" cy="0" r="54" fill="#80d2ff"/>
+      <text x="-16" y="14" fill="#0f4264" font-family="Lato, Arial, sans-serif" font-size="42" font-weight="800">4</text>
+    </g>
+    <g transform="translate(1010 470)">
+      <circle cx="0" cy="0" r="54" fill="#9ce38d"/>
+      <text x="-16" y="14" fill="#24571c" font-family="Lato, Arial, sans-serif" font-size="42" font-weight="800">9</text>
+    </g>
+  </g>
+
+  <text x="640" y="615" fill="#e2f4ff" font-family="Lato, Arial, sans-serif" font-size="34" font-weight="700">Singapore 4D + Toto Number Lab</text>
+</svg>

@@ -14,6 +14,7 @@ export type TotoRecentDraw = {
   drawNo: string;
   winning: number[];
   additional: number;
+  jackpotAmount?: number;
 };
 
 export type TotoPrediction = {
@@ -85,14 +86,14 @@ const OFFICIAL_TOTO_WNF: TotoFrequencyRow[] = [
 ];
 
 const RECENT_TOTO_DRAWS: TotoRecentDraw[] = [
-  { drawNo: "4157", drawDate: "2026-02-16", winning: [13, 24, 28, 34, 37, 44], additional: 29 },
-  { drawNo: "4156", drawDate: "2026-02-13", winning: [10, 15, 25, 43, 45, 49], additional: 4 },
-  { drawNo: "4155", drawDate: "2026-02-09", winning: [10, 15, 29, 31, 33, 49], additional: 30 },
-  { drawNo: "4154", drawDate: "2026-02-05", winning: [6, 18, 24, 26, 36, 48], additional: 5 },
-  { drawNo: "4153", drawDate: "2026-02-02", winning: [4, 19, 40, 41, 46, 47], additional: 20 },
-  { drawNo: "4152", drawDate: "2026-01-29", winning: [11, 13, 16, 31, 42, 48], additional: 21 },
-  { drawNo: "4151", drawDate: "2026-01-26", winning: [10, 11, 13, 26, 32, 39], additional: 44 },
-  { drawNo: "4150", drawDate: "2026-01-22", winning: [6, 22, 27, 32, 37, 44], additional: 19 },
+  { drawNo: "4157", drawDate: "2026-02-16", winning: [13, 24, 28, 34, 37, 44], additional: 29, jackpotAmount: 2_000_000 },
+  { drawNo: "4156", drawDate: "2026-02-13", winning: [10, 15, 25, 43, 45, 49], additional: 4, jackpotAmount: 4_300_000 },
+  { drawNo: "4155", drawDate: "2026-02-09", winning: [10, 15, 29, 31, 33, 49], additional: 30, jackpotAmount: 3_100_000 },
+  { drawNo: "4154", drawDate: "2026-02-05", winning: [6, 18, 24, 26, 36, 48], additional: 5, jackpotAmount: 5_800_000 },
+  { drawNo: "4153", drawDate: "2026-02-02", winning: [4, 19, 40, 41, 46, 47], additional: 20, jackpotAmount: 1_700_000 },
+  { drawNo: "4152", drawDate: "2026-01-29", winning: [11, 13, 16, 31, 42, 48], additional: 21, jackpotAmount: 7_200_000 },
+  { drawNo: "4151", drawDate: "2026-01-26", winning: [10, 11, 13, 26, 32, 39], additional: 44, jackpotAmount: 2_600_000 },
+  { drawNo: "4150", drawDate: "2026-01-22", winning: [6, 22, 27, 32, 37, 44], additional: 19, jackpotAmount: 3_900_000 },
   { drawNo: "4149", drawDate: "2026-01-19", winning: [4, 11, 21, 23, 31, 35], additional: 48 },
   { drawNo: "4148", drawDate: "2026-01-15", winning: [16, 32, 34, 35, 36, 41], additional: 14 },
   { drawNo: "4147", drawDate: "2026-01-12", winning: [1, 9, 16, 18, 35, 43], additional: 12 },
