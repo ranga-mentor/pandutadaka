@@ -1,41 +1,95 @@
 :root {
-  font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+  font-family: "Lato", "Noto Sans", "Segoe UI", sans-serif;
+  --bg: #f7f8fa;
+  --bg-alt: #f7f8fa;
+  --text: #1f2937;
+  --muted: #5b6472;
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --border: #d7dee8;
+  --accent: #1865f2;
+  --accent-soft: #eaf1ff;
+  --accent-2: #0a8f5b;
+  --code-bg: #10223b;
+  --code-border: #1f3658;
+  --code-text: #f6fbff;
+  --note-bg: #f2f7ff;
+  --note-border: #bfd3fb;
+  --note-shadow: 0 1px 5px rgba(24, 101, 242, 0.12);
+  --success-bg: #ecfff5;
+  --success-border: #0a8f5b;
+  --danger-bg: #fff0ed;
+  --danger-border: #d14836;
+  --soft-success-bg: #ebfaf4;
+  --overlay-bg: rgba(0, 0, 0, 0.35);
+  --toggle-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow: 0 2px 8px rgba(28, 44, 82, 0.08);
   line-height: 1.5;
   font-weight: 400;
-  color: #111111;
-  background-color: #d9d9d9;
+  color: var(--text);
+  background-color: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+[data-theme="dark"] {
+  --bg: #0f1728;
+  --bg-alt: #0f1728;
+  --text: #e9eef9;
+  --muted: #afbdd8;
+  --surface: #17233a;
+  --surface-alt: #1e2d47;
+  --border: #314567;
+  --accent: #79a9ff;
+  --accent-soft: #243a63;
+  --accent-2: #3bc38f;
+  --code-bg: #0f1e34;
+  --code-border: #314567;
+  --code-text: #e9eef9;
+  --note-bg: #1a2d4f;
+  --note-border: #5ea0ff;
+  --note-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  --success-bg: #163826;
+  --success-border: #2aa26b;
+  --danger-bg: #3e1f25;
+  --danger-border: #d14836;
+  --soft-success-bg: #12352d;
+  --overlay-bg: rgba(0, 0, 0, 0.45);
+  --toggle-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #d9d9d9;
+  color: var(--text);
+  background: var(--bg);
 }
 
 button {
-  border-radius: 0.5rem;
-  border: 1px solid #c7cfde;
-  padding: 0.48rem 0.8rem;
-  font-size: 0.95rem;
-  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 700;
   font-family: inherit;
-  color: #172034;
-  background-color: #fafafa;
+  color: var(--text);
+  background-color: var(--surface);
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
 }
 
 button:hover {
-  border-color: #7c90b5;
+  border-color: var(--accent);
+  transform: translateY(0);
+  background-color: var(--accent-soft);
 }
 
 button:focus,
 button:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { CssBaseline, IconButton, ThemeProvider, createTheme } from "@mui/material";
 import { trackEvent } from "./analytics";
 import NricTools from "./components/NricTools";
 import TotoPredictor from "./components/TotoPredictor";
@@ -24,10 +25,46 @@ function GitZonesDiagram() {
 
 function App() {
   const [mode, setMode] = useState<"workbook" | "nric" | "toto" | "sg-toto" | "java">("workbook");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") {
+      return "light";
+    }
+    return window.localStorage.getItem("theme") === "dark" ? "dark" : "light";
+  });
   const [trackIndex, setTrackIndex] = useState(0);
   const [lessonIndex, setLessonIndex] = useState(0);
 
   const activeTrack = learningTracks[trackIndex];
+  const muiTheme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: theme,
+          primary: {
+            main: theme === "light" ? "#1865f2" : "#79a9ff",
+          },
+          secondary: {
+            main: theme === "light" ? "#0a8f5b" : "#3bc38f",
+          },
+          background: {
+            default: theme === "light" ? "#f7f8fa" : "#0f1728",
+            paper: theme === "light" ? "#ffffff" : "#17233a",
+          },
+          text: {
+            primary: theme === "light" ? "#1f2937" : "#e9eef9",
+            secondary: theme === "light" ? "#5b6472" : "#afbdd8",
+          },
+        },
+        shape: {
+          borderRadius: 12,
+        },
+        typography: {
+          fontFamily: '"Lato", "Noto Sans", "Segoe UI", sans-serif',
+        },
+      }),
+    [theme],
+  );
+
   const flatLessons = useMemo(
     () =>
       activeTrack.modules.flatMap((module) =>
@@ -37,6 +74,11 @@ function App() {
   );
 
   const activeLesson = flatLessons[lessonIndex];
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    window.localStorage.setItem("theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     if (mode !== "workbook") {
@@ -57,7 +99,9 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline />
+      <main className="app-shell">
       <div className="card-background" aria-hidden="true">
         <span className="bg-card bg-card-1" />
         <span className="bg-card bg-card-2" />
@@ -67,8 +111,22 @@ function App() {
       </div>
 
       <header className="topbar">
-        <p className="eyebrow">Learning Workbook</p>
-        <h1>Byte Learning</h1>
+        <div className="topbar-content">
+          <div>
+            <p className="eyebrow">Learning Workbook</p>
+            <h1>Byte Learning</h1>
+          </div>
+          <IconButton
+            className={`theme-toggle ${theme === "dark" ? "is-dark" : ""}`}
+            onClick={() => setTheme((current) => (current === "light" ? "dark" : "light"))}
+            aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+            title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+          >
+            <span aria-hidden="true" className="theme-toggle-icon sun">☀</span>
+            <span aria-hidden="true" className="theme-toggle-thumb" />
+            <span aria-hidden="true" className="theme-toggle-icon moon">☾</span>
+          </IconButton>
+        </div>
       </header>
 
       <section className="mode-switcher">
@@ -210,7 +268,8 @@ function App() {
           </div>
         </article>
       </div>}
-    </main>
+      </main>
+    </ThemeProvider>
   );
 }
 
