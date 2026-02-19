@@ -114,7 +114,7 @@ export default function NricTools() {
           type="button"
         >
           <span className="country-flag" aria-hidden="true">🇸🇬</span>
-          <span>Singapore</span>
+          <span>Singapore NRIC/FIN</span>
         </button>
         <button
           className={countryPage === "my" ? "is-active" : ""}
@@ -122,7 +122,7 @@ export default function NricTools() {
           type="button"
         >
           <span className="country-flag" aria-hidden="true">🇲🇾</span>
-          <span>Malaysia</span>
+          <span>Malaysia MyKad</span>
         </button>
         <button
           className={countryPage === "hk" ? "is-active" : ""}
@@ -130,7 +130,7 @@ export default function NricTools() {
           type="button"
         >
           <span className="country-flag" aria-hidden="true">🇭🇰</span>
-          <span>Hong Kong</span>
+          <span>Hong Kong HKID</span>
         </button>
       </section>
 
@@ -163,9 +163,53 @@ export default function NricTools() {
             )}
           </article>
 
-          <article className="tool-card id-tool-card">
+          <article className="tool-card id-tool-card id-generator-card">
             <h2>Singapore NRIC/FIN Generator</h2>
             <p>Generates one random value with correct checksum (test/demo use only).</p>
+            <div className="generator-controls">
+              <div className="generator-field">
+                <label htmlFor="prefix-select">Prefix</label>
+                <select
+                  id="prefix-select"
+                  className="tool-select"
+                  value={prefixSelection}
+                  onChange={(event) =>
+                    setPrefixSelection(event.target.value as NricPrefixSelection)
+                  }
+                >
+                  {PREFIX_OPTIONS.map((prefix) => (
+                    <option key={prefix} value={prefix}>
+                      {prefix}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                className="generate-button"
+                type="button"
+                onClick={() => {
+                  setGeneratedSg(generateNric(prefixSelection));
+                  setCopyStateSg("idle");
+                }}
+              >
+                Generate ID
+              </button>
+            </div>
+            <div className="generated-single">
+              <p className="generated-label">Generated ID</p>
+              <button
+                className="generated-value"
+                onClick={() => copyGeneratedValue(generatedSg, setCopyStateSg)}
+                title="Copy generated ID"
+                type="button"
+              >
+                <code>{generatedSg}</code>
+                <span className={`copy-state ${copyStateSg === "copied" ? "is-copied" : ""}`}>
+                  {copyStateSg === "copied" ? "Copied" : "Copy"}
+                </span>
+              </button>
+              <p className="generated-hint">Click the generated value to copy it.</p>
+            </div>
             <button
               className="logic-button"
               onClick={() => setLogicPopup("sg")}
@@ -173,43 +217,6 @@ export default function NricTools() {
             >
               View generation logic
             </button>
-            <div className="generator-controls">
-              <label htmlFor="prefix-select">Prefix</label>
-              <select
-                id="prefix-select"
-                className="tool-select"
-                value={prefixSelection}
-                onChange={(event) =>
-                  setPrefixSelection(event.target.value as NricPrefixSelection)
-                }
-              >
-                {PREFIX_OPTIONS.map((prefix) => (
-                  <option key={prefix} value={prefix}>
-                    {prefix}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                onClick={() => {
-                  setGeneratedSg(generateNric(prefixSelection));
-                  setCopyStateSg("idle");
-                }}
-              >
-                Generate
-              </button>
-            </div>
-            <div className="generated-single">
-              <button
-                className="generated-value"
-                onClick={() => copyGeneratedValue(generatedSg, setCopyStateSg)}
-                title="Click to copy"
-                type="button"
-              >
-                <code>{generatedSg}</code>
-              </button>
-              <p>{copyStateSg === "copied" ? "Copied to clipboard" : "Click ID to copy"}</p>
-            </div>
           </article>
         </section>
       )}
@@ -243,9 +250,36 @@ export default function NricTools() {
             )}
           </article>
 
-          <article className="tool-card id-tool-card">
+          <article className="tool-card id-tool-card id-generator-card">
             <h2>Malaysia MyKad Generator</h2>
             <p>Generates one sample MyKad style ID (YYMMDD-PB-####).</p>
+            <div className="generator-actions">
+              <button
+                className="generate-button"
+                type="button"
+                onClick={() => {
+                  setGeneratedMy(generateMalaysiaId("any"));
+                  setCopyStateMy("idle");
+                }}
+              >
+                Generate ID
+              </button>
+            </div>
+            <div className="generated-single">
+              <p className="generated-label">Generated ID</p>
+              <button
+                className="generated-value"
+                onClick={() => copyGeneratedValue(generatedMy, setCopyStateMy)}
+                title="Copy generated ID"
+                type="button"
+              >
+                <code>{generatedMy}</code>
+                <span className={`copy-state ${copyStateMy === "copied" ? "is-copied" : ""}`}>
+                  {copyStateMy === "copied" ? "Copied" : "Copy"}
+                </span>
+              </button>
+              <p className="generated-hint">Click the generated value to copy it.</p>
+            </div>
             <button
               className="logic-button"
               onClick={() => setLogicPopup("my")}
@@ -253,29 +287,6 @@ export default function NricTools() {
             >
               View generation logic
             </button>
-            <div className="generator-controls">
-              <span />
-              <button
-                type="button"
-                onClick={() => {
-                  setGeneratedMy(generateMalaysiaId("any"));
-                  setCopyStateMy("idle");
-                }}
-              >
-                Generate
-              </button>
-            </div>
-            <div className="generated-single">
-              <button
-                className="generated-value"
-                onClick={() => copyGeneratedValue(generatedMy, setCopyStateMy)}
-                title="Click to copy"
-                type="button"
-              >
-                <code>{generatedMy}</code>
-              </button>
-              <p>{copyStateMy === "copied" ? "Copied to clipboard" : "Click ID to copy"}</p>
-            </div>
           </article>
         </section>
       )}
@@ -309,62 +320,43 @@ export default function NricTools() {
             )}
           </article>
 
-          <article className="tool-card id-tool-card">
+          <article className="tool-card id-tool-card id-generator-card">
             <h2>Hong Kong HKID Generator</h2>
             <p>Generates one sample HKID style value with checksum.</p>
-            <button
-              className="logic-button"
-              onClick={() => setLogicPopup("hk")}
-              type="button"
-            >
-              View generation logic
-            </button>
-            <div className="option-group">
-              <label>Prefix mode</label>
-              <div className="option-row">
-                <button
-                  className={hkPrefixMode === "auto" ? "is-active" : ""}
-                  onClick={() => setHkPrefixMode("auto")}
-                  type="button"
+            <div className="generator-select-grid">
+              <div className="generator-field">
+                <label htmlFor="hk-prefix-mode">Prefix mode</label>
+                <select
+                  id="hk-prefix-mode"
+                  className="tool-select"
+                  value={hkPrefixMode}
+                  onChange={(event) =>
+                    setHkPrefixMode(event.target.value as HkPrefixMode)
+                  }
                 >
-                  Auto
-                </button>
-                <button
-                  className={hkPrefixMode === "one" ? "is-active" : ""}
-                  onClick={() => setHkPrefixMode("one")}
-                  type="button"
-                >
-                  One letter
-                </button>
-                <button
-                  className={hkPrefixMode === "two" ? "is-active" : ""}
-                  onClick={() => setHkPrefixMode("two")}
-                  type="button"
-                >
-                  Two letters
-                </button>
+                  <option value="auto">Auto</option>
+                  <option value="one">One letter</option>
+                  <option value="two">Two letters</option>
+                </select>
               </div>
-              <label className="checkbox-row">Check digit format</label>
-              <div className="option-row">
-                <button
-                  className={hkCheckDigitFormat === "hyphen" ? "is-active" : ""}
-                  onClick={() => setHkCheckDigitFormat("hyphen")}
-                  type="button"
+              <div className="generator-field">
+                <label htmlFor="hk-id-format">ID format</label>
+                <select
+                  id="hk-id-format"
+                  className="tool-select"
+                  value={hkCheckDigitFormat}
+                  onChange={(event) =>
+                    setHkCheckDigitFormat(event.target.value as HkCheckDigitFormat)
+                  }
                 >
-                  Hyphen
-                </button>
-                <button
-                  className={hkCheckDigitFormat === "parentheses" ? "is-active" : ""}
-                  onClick={() => setHkCheckDigitFormat("parentheses")}
-                  type="button"
-                >
-                  Parentheses
-                </button>
+                  <option value="hyphen">Hyphen (A123456-7)</option>
+                  <option value="parentheses">Parentheses (A123456(7))</option>
+                </select>
               </div>
             </div>
-            <div className="generator-controls">
-              <span />
+            <div className="generator-actions">
               <button
+                className="generate-button"
                 type="button"
                 onClick={() => {
                   setGeneratedHk(
@@ -376,20 +368,31 @@ export default function NricTools() {
                   setCopyStateHk("idle");
                 }}
               >
-                Generate New One
+                Generate ID
               </button>
             </div>
             <div className="generated-single">
+              <p className="generated-label">Generated ID</p>
               <button
                 className="generated-value"
                 onClick={() => copyGeneratedValue(generatedHk, setCopyStateHk)}
-                title="Click to copy"
+                title="Copy generated ID"
                 type="button"
               >
                 <code>{generatedHk}</code>
+                <span className={`copy-state ${copyStateHk === "copied" ? "is-copied" : ""}`}>
+                  {copyStateHk === "copied" ? "Copied" : "Copy"}
+                </span>
               </button>
-              <p>{copyStateHk === "copied" ? "Copied to clipboard" : "Click ID to copy"}</p>
+              <p className="generated-hint">Click the generated value to copy it.</p>
             </div>
+            <button
+              className="logic-button"
+              onClick={() => setLogicPopup("hk")}
+              type="button"
+            >
+              View generation logic
+            </button>
           </article>
         </section>
       )}
