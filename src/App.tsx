@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CssBaseline, IconButton, ThemeProvider, createTheme } from "@mui/material";
 import { trackEvent } from "./analytics";
 import JavaFeaturesPage from "./components/JavaFeaturesPage";
@@ -16,6 +16,17 @@ type FeatureCard = {
   action: string;
   mode: Mode;
   image: string;
+};
+
+type SearchResult = {
+  id: string;
+  label: string;
+  hint: string;
+  mode: Mode;
+  numbersMode?: "4d" | "toto";
+  trackIndex?: number;
+  lessonIndex?: number;
+  keywords?: string[];
 };
 
 const featureCards: FeatureCard[] = [
@@ -69,6 +80,8 @@ function GitZonesDiagram() {
 function App() {
   const [mode, setMode] = useState<Mode>("home");
   const [numbersMode, setNumbersMode] = useState<"4d" | "toto">("4d");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
     if (typeof window === "undefined") {
       return "light";
@@ -77,6 +90,7 @@ function App() {
   });
   const [trackIndex, setTrackIndex] = useState(0);
   const [lessonIndex, setLessonIndex] = useState(0);
+  const searchBoxRef = useRef<HTMLDivElement | null>(null);
 
   const activeTrack = learningTracks[trackIndex];
   const flatLessons = useMemo(
@@ -87,6 +101,90 @@ function App() {
     [activeTrack],
   );
   const activeLesson = flatLessons[lessonIndex];
+  const searchItems = useMemo(() => {
+    const items: SearchResult[] = [
+      {
+        id: "home",
+        label: "Learning Lab",
+        hint: "Home page",
+        mode: "home",
+        keywords: ["home", "dashboard"],
+      },
+      {
+        id: "id-tools",
+        label: "ID Tools Studio",
+        hint: "Singapore, Malaysia, Hong Kong",
+        mode: "id-tools",
+        keywords: ["nric", "mykad", "hkid", "validator", "generator"],
+      },
+      {
+        id: "numbers-4d",
+        label: "4D Predictor",
+        hint: "Singapore 4D probability picks",
+        mode: "numbers",
+        numbersMode: "4d",
+        keywords: ["4d", "lottery", "predictor"],
+      },
+      {
+        id: "numbers-toto",
+        label: "Toto Predictor",
+        hint: "Singapore Toto history-based picks",
+        mode: "numbers",
+        numbersMode: "toto",
+        keywords: ["toto", "lottery", "jackpot"],
+      },
+      {
+        id: "java",
+        label: "Java Feature Explorer",
+        hint: "Java 11 to Java 21",
+        mode: "java",
+        keywords: ["java", "jdk", "features"],
+      },
+    ];
+
+    learningTracks.forEach((track, tIndex) => {
+      items.push({
+        id: `track-${track.id}`,
+        label: track.title,
+        hint: "Workbook track",
+        mode: "workbook",
+        trackIndex: tIndex,
+        lessonIndex: 0,
+        keywords: [track.subtitle],
+      });
+
+      const lessons = track.modules.flatMap((module) =>
+        module.lessons.map((lesson) => ({ moduleTitle: module.title, lesson })),
+      );
+
+      lessons.forEach((entry, index) => {
+        items.push({
+          id: `lesson-${track.id}-${entry.lesson.id}`,
+          label: entry.lesson.title,
+          hint: `${track.title} • ${entry.moduleTitle}`,
+          mode: "workbook",
+          trackIndex: tIndex,
+          lessonIndex: index,
+          keywords: [entry.lesson.objective],
+        });
+      });
+    });
+
+    return items;
+  }, []);
+
+  const filteredSearchItems = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) {
+      return [];
+    }
+    return searchItems
+      .filter((item) => {
+        const haystack = `${item.label} ${item.hint} ${(item.keywords ?? []).join(" ")}`.toLowerCase();
+        return haystack.includes(query);
+      })
+      .slice(0, 8);
+  }, [searchItems, searchQuery]);
 
   const muiTheme = useMemo(
     () =>
@@ -124,6 +222,39 @@ function App() {
     });
   }, [activeLesson, activeTrack.id, mode]);
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (!searchBoxRef.current) {
+        return;
+      }
+      if (!searchBoxRef.current.contains(event.target as Node)) {
+        setSearchOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  function openSearchResult(item: SearchResult) {
+    setMode(item.mode);
+    if (item.mode === "numbers" && item.numbersMode) {
+      setNumbersMode(item.numbersMode);
+    }
+    if (item.mode === "workbook") {
+      if (typeof item.trackIndex === "number") {
+        setTrackIndex(item.trackIndex);
+      }
+      if (typeof item.lessonIndex === "number") {
+        setLessonIndex(item.lessonIndex);
+      }
+    }
+    setSearchQuery("");
+    setSearchOpen(false);
+  }
+
   if (!activeLesson) {
     return <main className="ca-shell">No lessons available.</main>;
   }
@@ -157,7 +288,49 @@ function App() {
             </button>
           </nav>
           <div className="ca-header-actions">
-            <input className="ca-search" type="search" placeholder="Search courses or tools" />
+            <div className="ca-search-box" ref={searchBoxRef}>
+              <input
+                className="ca-search"
+                type="search"
+                placeholder="Search courses or tools"
+                value={searchQuery}
+                onChange={(event) => {
+                  setSearchQuery(event.target.value);
+                  setSearchOpen(true);
+                }}
+                onFocus={() => setSearchOpen(true)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    if (filteredSearchItems[0]) {
+                      openSearchResult(filteredSearchItems[0]);
+                    }
+                  }
+                  if (event.key === "Escape") {
+                    setSearchOpen(false);
+                  }
+                }}
+              />
+              {searchOpen && searchQuery.trim() && (
+                <div className="ca-search-dropdown" role="listbox" aria-label="Search results">
+                  {filteredSearchItems.length > 0 ? (
+                    filteredSearchItems.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className="ca-search-result"
+                        onClick={() => openSearchResult(item)}
+                      >
+                        <strong>{item.label}</strong>
+                        <span>{item.hint}</span>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="ca-search-empty">No matching results</p>
+                  )}
+                </div>
+              )}
+            </div>
             <IconButton
               className={`theme-toggle ${themeMode === "dark" ? "is-dark" : ""}`}
               onClick={() =>
