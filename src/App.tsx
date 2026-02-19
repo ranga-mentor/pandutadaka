@@ -86,6 +86,11 @@ const aiPosterSlides = [
     alt: "What is Generative AI visual guide covering what it is, how it works, capabilities, and practical examples",
     caption: "Generative AI poster: concept, workflow, and what GenAI can create.",
   },
+  {
+    src: "/LLM.png",
+    alt: "What are LLMs visual guide covering what large language models are, how they work, uses, and examples",
+    caption: "LLM poster: what LLMs are, how they work, and common use cases.",
+  },
 ];
 
 function GitZonesDiagram() {
