@@ -14,9 +14,6 @@
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 0.75rem 1rem;
-  position: sticky;
-  top: 0.5rem;
-  z-index: 20;
   box-shadow: var(--shadow);
 }
 
@@ -1089,7 +1086,8 @@
 }
 
 .ai-carousel {
-  width: 100%;
+  --ai-page-height: clamp(360px, calc(100dvh - 280px), 760px);
+  width: min(100%, max(50vw, calc(var(--ai-page-height) * 0.72)));
   margin: 0.3rem auto 0.35rem;
   display: grid;
   gap: 0.5rem;
@@ -1129,7 +1127,7 @@
   border-radius: 14px;
   perspective: 1200px;
   transform-style: preserve-3d;
-  height: min(78dvh, calc(100dvh - 220px));
+  height: var(--ai-page-height);
 }
 
 .ai-carousel-viewport:focus-visible {
@@ -1151,6 +1149,7 @@
   flex: 0 0 100%;
   scroll-snap-align: start;
   height: 100%;
+  cursor: zoom-in;
 }
 
 @keyframes pageFlipNext {
@@ -1212,6 +1211,69 @@
   font-size: 0.82rem;
   color: var(--muted);
   text-align: center;
+}
+
+.ai-fullscreen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.86);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.ai-fullscreen-content {
+  position: relative;
+  width: min(100%, 1200px);
+  max-height: 96dvh;
+}
+
+.ai-fullscreen-close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  z-index: 1;
+}
+
+.ai-fullscreen-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 999px;
+  padding: 0;
+  font-size: 1.5rem;
+  line-height: 1;
+  z-index: 1;
+}
+
+.ai-fullscreen-nav.prev {
+  left: 0.35rem;
+}
+
+.ai-fullscreen-nav.next {
+  right: 0.35rem;
+}
+
+.ai-fullscreen-nav:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ai-fullscreen-content img {
+  width: 100%;
+  max-height: 96dvh;
+  object-fit: contain;
+  border-radius: 10px;
+  display: block;
 }
 
 .ai-carousel-dots {
@@ -1492,6 +1554,7 @@
   }
 
   .ai-carousel {
+    --ai-page-height: clamp(300px, calc(100dvh - 250px), 620px);
     width: 100%;
   }
 
@@ -1501,6 +1564,22 @@
 
   .ai-carousel-arrow {
     display: none;
+  }
+
+  .ai-carousel-viewport {
+    height: var(--ai-page-height);
+  }
+}
+
+@media (max-height: 900px) and (min-width: 921px) {
+  .ai-carousel {
+    --ai-page-height: clamp(320px, calc(100dvh - 300px), 620px);
+  }
+}
+
+@media (max-height: 760px) {
+  .ai-carousel {
+    --ai-page-height: clamp(260px, calc(100dvh - 280px), 520px);
   }
 }
 

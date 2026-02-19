@@ -125,7 +125,13 @@ function App() {
   const aiCarouselRef = useRef<HTMLDivElement | null>(null);
   const [aiSlideIndex, setAiSlideIndex] = useState(0);
   const [aiFlipDirection, setAiFlipDirection] = useState<"next" | "prev" | null>(null);
+  const [aiFullscreenOpen, setAiFullscreenOpen] = useState(false);
   const flipResetTimerRef = useRef<number | null>(null);
+  const aiNavLockTimerRef = useRef<number | null>(null);
+  const aiNavLockedRef = useRef(false);
+  const aiScrollBehaviorRef = useRef<ScrollBehavior>("auto");
+  const aiProgrammaticScrollRef = useRef(false);
+  const aiProgrammaticScrollTimerRef = useRef<number | null>(null);
 
   const activeTrack = learningTracks[trackIndex];
   const flatLessons = useMemo(
@@ -299,12 +305,9 @@ function App() {
 
   function scrollToAiSlide(nextIndex: number, smooth = true) {
     const viewport = aiCarouselRef.current;
-    if (!viewport) {
-      return;
-    }
     const clampedIndex = Math.max(0, Math.min(nextIndex, aiPosterSlides.length - 1));
     const direction = clampedIndex > aiSlideIndex ? "next" : clampedIndex < aiSlideIndex ? "prev" : null;
-    if (direction) {
+    if (direction && !aiFullscreenOpen) {
       setAiFlipDirection(direction);
       if (flipResetTimerRef.current) {
         window.clearTimeout(flipResetTimerRef.current);
@@ -314,8 +317,26 @@ function App() {
         flipResetTimerRef.current = null;
       }, 420);
     }
-    const left = clampedIndex * viewport.clientWidth;
-    viewport.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
+    if (aiFullscreenOpen) {
+      if (aiNavLockedRef.current) {
+        return;
+      }
+      aiNavLockedRef.current = true;
+      if (aiNavLockTimerRef.current) {
+        window.clearTimeout(aiNavLockTimerRef.current);
+      }
+      aiNavLockTimerRef.current = window.setTimeout(() => {
+        aiNavLockedRef.current = false;
+        aiNavLockTimerRef.current = null;
+      }, 420);
+      setAiSlideIndex(clampedIndex);
+      return;
+    }
+    if (!viewport) {
+      aiNavLockedRef.current = false;
+      return;
+    }
+    aiScrollBehaviorRef.current = smooth ? "smooth" : "auto";
     setAiSlideIndex(clampedIndex);
   }
 
@@ -330,12 +351,64 @@ function App() {
   }, [mode]);
 
   useEffect(() => {
+    if (mode !== "ai" || aiFullscreenOpen) {
+      return;
+    }
+    const viewport = aiCarouselRef.current;
+    if (!viewport) {
+      return;
+    }
+    const behavior = aiScrollBehaviorRef.current;
+    aiProgrammaticScrollRef.current = true;
+    if (aiProgrammaticScrollTimerRef.current) {
+      window.clearTimeout(aiProgrammaticScrollTimerRef.current);
+    }
+    aiProgrammaticScrollTimerRef.current = window.setTimeout(() => {
+      aiProgrammaticScrollRef.current = false;
+      aiProgrammaticScrollTimerRef.current = null;
+    }, behavior === "smooth" ? 460 : 80);
+
+    const left = aiSlideIndex * viewport.clientWidth;
+    viewport.scrollTo({ left, behavior });
+    aiScrollBehaviorRef.current = "auto";
+  }, [aiFullscreenOpen, aiSlideIndex, mode]);
+
+  useEffect(() => {
     return () => {
       if (flipResetTimerRef.current) {
         window.clearTimeout(flipResetTimerRef.current);
       }
+      if (aiNavLockTimerRef.current) {
+        window.clearTimeout(aiNavLockTimerRef.current);
+      }
+      if (aiProgrammaticScrollTimerRef.current) {
+        window.clearTimeout(aiProgrammaticScrollTimerRef.current);
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (!aiFullscreenOpen) {
+      return;
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setAiFullscreenOpen(false);
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        scrollToAiSlide(aiSlideIndex - 1);
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        scrollToAiSlide(aiSlideIndex + 1);
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [aiFullscreenOpen, aiSlideIndex]);
 
   if (!activeLesson) {
     return <main className="ca-shell">No lessons available.</main>;
@@ -619,13 +692,6 @@ function App() {
               <h2>AI Studio</h2>
               <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
-            <section className="tool-card ai-hero">
-              <h2>How to use AI in this lab</h2>
-              <p>
-                Start with clear prompts, provide context, and ask for structured output.
-                Validate important results before using them in production workflows.
-              </p>
-            </section>
             <section className="ai-carousel" aria-label="AI visual pages">
               <div className="ai-carousel-track">
                 <button
@@ -645,6 +711,9 @@ function App() {
                   ].filter(Boolean).join(" ")}
                   ref={aiCarouselRef}
                   onScroll={(event) => {
+                    if (aiProgrammaticScrollRef.current) {
+                      return;
+                    }
                     const target = event.currentTarget;
                     if (!target.clientWidth) {
                       return;
@@ -667,7 +736,20 @@ function App() {
                   tabIndex={0}
                 >
                   {aiPosterSlides.map((slide) => (
-                    <figure className="ai-poster ai-slide" key={slide.src}>
+                    <figure
+                      className="ai-poster ai-slide"
+                      key={slide.src}
+                      onClick={() => setAiFullscreenOpen(true)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setAiFullscreenOpen(true);
+                        }
+                      }}
+                      aria-label="Open page in fullscreen"
+                    >
                       <img src={slide.src} alt={slide.alt} width={1024} height={1536} />
                       <figcaption>{slide.caption}</figcaption>
                     </figure>
@@ -694,6 +776,63 @@ function App() {
                   />
                 ))}
               </div>
+              {aiFullscreenOpen && (
+                <div
+                  className="ai-fullscreen-overlay"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="AI page fullscreen"
+                  onClick={(event) => {
+                    if (event.target === event.currentTarget) {
+                      setAiFullscreenOpen(false);
+                    }
+                  }}
+                >
+                  <div className="ai-fullscreen-content">
+                    <button
+                      type="button"
+                      className="ai-fullscreen-nav prev"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        scrollToAiSlide(aiSlideIndex - 1, false);
+                      }}
+                      disabled={aiSlideIndex === 0}
+                      aria-label="Previous page"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      className="ai-fullscreen-close"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setAiFullscreenOpen(false);
+                      }}
+                      aria-label="Close fullscreen"
+                    >
+                      ✕
+                    </button>
+                    <img
+                      src={aiPosterSlides[aiSlideIndex].src}
+                      alt={aiPosterSlides[aiSlideIndex].alt}
+                      width={1024}
+                      height={1536}
+                    />
+                    <button
+                      type="button"
+                      className="ai-fullscreen-nav next"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        scrollToAiSlide(aiSlideIndex + 1, false);
+                      }}
+                      disabled={aiSlideIndex === aiPosterSlides.length - 1}
+                      aria-label="Next page"
+                    >
+                      ›
+                    </button>
+                  </div>
+                </div>
+              )}
             </section>
             <section className="bite-grid" aria-label="AI learning blocks">
               <article className="bite-card">
@@ -708,6 +847,13 @@ function App() {
                 <h3>Safety Check</h3>
                 <p>For finance, legal, or medical topics, cross-check with trusted primary sources.</p>
               </article>
+            </section>
+            <section className="tool-card ai-hero">
+              <h2>How to use AI in this lab</h2>
+              <p>
+                Start with clear prompts, provide context, and ask for structured output.
+                Validate important results before using them in production workflows.
+              </p>
             </section>
           </section>
         )}
