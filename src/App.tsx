@@ -70,6 +70,24 @@ const featureCards: FeatureCard[] = [
   },
 ];
 
+const aiPosterSlides = [
+  {
+    src: "/AIinnutshell.png",
+    alt: "What is AI quick visual guide with simple definition, examples, business use, and AI versus ML",
+    caption: "AI basics poster: sense, think, act, examples, and AI vs ML.",
+  },
+  {
+    src: "/MLHF.png",
+    alt: "What is ML visual guide explaining machine learning basics, workflow, real-life examples, and learning types",
+    caption: "ML basics poster: how ML works, real-life usage, and learning types.",
+  },
+  {
+    src: "/GenAI.png",
+    alt: "What is Generative AI visual guide covering what it is, how it works, capabilities, and practical examples",
+    caption: "Generative AI poster: concept, workflow, and what GenAI can create.",
+  },
+];
+
 function GitZonesDiagram() {
   return (
     <figure className="zone-figure" aria-label="Git three zone flow">
@@ -99,6 +117,10 @@ function App() {
   const [trackIndex, setTrackIndex] = useState(0);
   const [lessonIndex, setLessonIndex] = useState(0);
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
+  const aiCarouselRef = useRef<HTMLDivElement | null>(null);
+  const [aiSlideIndex, setAiSlideIndex] = useState(0);
+  const [aiFlipDirection, setAiFlipDirection] = useState<"next" | "prev" | null>(null);
+  const flipResetTimerRef = useRef<number | null>(null);
 
   const activeTrack = learningTracks[trackIndex];
   const flatLessons = useMemo(
@@ -269,6 +291,46 @@ function App() {
     setSearchQuery("");
     setSearchOpen(false);
   }
+
+  function scrollToAiSlide(nextIndex: number, smooth = true) {
+    const viewport = aiCarouselRef.current;
+    if (!viewport) {
+      return;
+    }
+    const clampedIndex = Math.max(0, Math.min(nextIndex, aiPosterSlides.length - 1));
+    const direction = clampedIndex > aiSlideIndex ? "next" : clampedIndex < aiSlideIndex ? "prev" : null;
+    if (direction) {
+      setAiFlipDirection(direction);
+      if (flipResetTimerRef.current) {
+        window.clearTimeout(flipResetTimerRef.current);
+      }
+      flipResetTimerRef.current = window.setTimeout(() => {
+        setAiFlipDirection(null);
+        flipResetTimerRef.current = null;
+      }, 420);
+    }
+    const left = clampedIndex * viewport.clientWidth;
+    viewport.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
+    setAiSlideIndex(clampedIndex);
+  }
+
+  useEffect(() => {
+    if (mode !== "ai") {
+      return;
+    }
+    setAiSlideIndex(0);
+    requestAnimationFrame(() => {
+      scrollToAiSlide(0, false);
+    });
+  }, [mode]);
+
+  useEffect(() => {
+    return () => {
+      if (flipResetTimerRef.current) {
+        window.clearTimeout(flipResetTimerRef.current);
+      }
+    };
+  }, []);
 
   if (!activeLesson) {
     return <main className="ca-shell">No lessons available.</main>;
@@ -558,6 +620,75 @@ function App() {
                 Start with clear prompts, provide context, and ask for structured output.
                 Validate important results before using them in production workflows.
               </p>
+            </section>
+            <section className="ai-carousel" aria-label="AI visual pages">
+              <div className="ai-carousel-track">
+                <button
+                  type="button"
+                  className="ai-carousel-arrow"
+                  onClick={() => scrollToAiSlide(aiSlideIndex - 1)}
+                  disabled={aiSlideIndex === 0}
+                  aria-label="Previous page"
+                >
+                  ‹
+                </button>
+                <div
+                  className={[
+                    "ai-carousel-viewport",
+                    aiFlipDirection === "next" ? "is-flipping-next" : "",
+                    aiFlipDirection === "prev" ? "is-flipping-prev" : "",
+                  ].filter(Boolean).join(" ")}
+                  ref={aiCarouselRef}
+                  onScroll={(event) => {
+                    const target = event.currentTarget;
+                    if (!target.clientWidth) {
+                      return;
+                    }
+                    const nextIndex = Math.round(target.scrollLeft / target.clientWidth);
+                    if (nextIndex !== aiSlideIndex) {
+                      setAiSlideIndex(nextIndex);
+                    }
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowLeft") {
+                      event.preventDefault();
+                      scrollToAiSlide(aiSlideIndex - 1);
+                    }
+                    if (event.key === "ArrowRight") {
+                      event.preventDefault();
+                      scrollToAiSlide(aiSlideIndex + 1);
+                    }
+                  }}
+                  tabIndex={0}
+                >
+                  {aiPosterSlides.map((slide) => (
+                    <figure className="ai-poster ai-slide" key={slide.src}>
+                      <img src={slide.src} alt={slide.alt} width={1024} height={1536} />
+                      <figcaption>{slide.caption}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="ai-carousel-arrow"
+                  onClick={() => scrollToAiSlide(aiSlideIndex + 1)}
+                  disabled={aiSlideIndex === aiPosterSlides.length - 1}
+                  aria-label="Next page"
+                >
+                  ›
+                </button>
+              </div>
+              <div className="ai-carousel-dots" role="tablist" aria-label="AI page indicators">
+                {aiPosterSlides.map((slide, index) => (
+                  <button
+                    key={slide.src}
+                    type="button"
+                    className={index === aiSlideIndex ? "is-active" : ""}
+                    onClick={() => scrollToAiSlide(index)}
+                    aria-label={`Go to page ${index + 1}`}
+                  />
+                ))}
+              </div>
             </section>
             <section className="bite-grid" aria-label="AI learning blocks">
               <article className="bite-card">

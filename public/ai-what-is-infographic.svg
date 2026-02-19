@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1800" role="img" aria-labelledby="title desc">
+  <title id="title">What is AI infographic</title>
+  <desc id="desc">A classroom style poster that explains AI basics, examples, business usage, and AI versus machine learning.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8f1dc" />
+      <stop offset="1" stop-color="#efe4c8" />
+    </linearGradient>
+    <linearGradient id="noteBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dff0ff" />
+      <stop offset="1" stop-color="#beddf7" />
+    </linearGradient>
+    <linearGradient id="noteYellow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe8a8" />
+      <stop offset="1" stop-color="#f3d37a" />
+    </linearGradient>
+    <linearGradient id="noteGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dff7d9" />
+      <stop offset="1" stop-color="#bfe7b6" />
+    </linearGradient>
+    <style>
+      .hdr { font: 700 56px "Trebuchet MS", "Segoe UI", sans-serif; fill: #1f2125; }
+      .subhdr { font: 700 44px "Trebuchet MS", "Segoe UI", sans-serif; fill: #1f2125; }
+      .txt { font: 500 36px "Trebuchet MS", "Segoe UI", sans-serif; fill: #21262b; }
+      .small { font: 500 30px "Trebuchet MS", "Segoe UI", sans-serif; fill: #2a3038; }
+      .tiny { font: 500 26px "Trebuchet MS", "Segoe UI", sans-serif; fill: #33404f; }
+      .bold { font-weight: 700; }
+      .muted { fill: #4f5e70; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="1800" fill="url(#paper)" />
+  <rect x="40" y="24" width="1120" height="1752" rx="28" fill="#f6eed7" stroke="#2b2d31" stroke-width="6" />
+
+  <rect x="80" y="72" width="1040" height="96" rx="14" fill="#f2d573" stroke="#2f2f30" stroke-width="4" />
+  <text x="100" y="136" class="hdr">WHAT IS AI (ARTIFICIAL INTELLIGENCE)?</text>
+
+  <rect x="80" y="198" width="1040" height="130" rx="14" fill="#fff4d2" stroke="#2f2f30" stroke-width="3" />
+  <text x="110" y="268" class="subhdr">AI</text>
+  <text x="180" y="268" class="txt">= teaching computers to do tasks</text>
+  <text x="180" y="312" class="txt">that normally need human intelligence.</text>
+
+  <rect x="80" y="352" width="1040" height="280" rx="16" fill="#fffaf0" stroke="#2f2f30" stroke-width="3" />
+  <text x="120" y="412" class="txt">- Understand language</text>
+  <text x="120" y="462" class="txt">- Recognize images</text>
+  <text x="120" y="512" class="txt">- Make decisions</text>
+  <text x="120" y="562" class="txt">- Solve problems</text>
+  <text x="120" y="612" class="txt">- Predict what happens next</text>
+
+  <rect x="740" y="394" width="320" height="210" rx="20" fill="#e9f4ff" stroke="#2f2f30" stroke-width="3" />
+  <rect x="792" y="438" width="220" height="130" rx="18" fill="#f8fcff" stroke="#2f2f30" stroke-width="3" />
+  <circle cx="862" cy="500" r="16" fill="#2d3440" />
+  <circle cx="942" cy="500" r="16" fill="#2d3440" />
+  <path d="M860 540 Q902 570 944 540" fill="none" stroke="#2d3440" stroke-width="6" stroke-linecap="round" />
+  <circle cx="1020" cy="430" r="26" fill="#ffd86a" stroke="#2f2f30" stroke-width="3" />
+  <path d="M1020 452 L1020 492" stroke="#2f2f30" stroke-width="5" />
+  <path d="M1005 492 H1035" stroke="#2f2f30" stroke-width="5" />
+
+  <rect x="80" y="662" width="1040" height="80" rx="12" fill="#f8e293" stroke="#2f2f30" stroke-width="3" />
+  <text x="110" y="716" class="subhdr">SIMPLE DEFINITION</text>
+
+  <rect x="80" y="758" width="1040" height="270" rx="16" fill="#fffaf0" stroke="#2f2f30" stroke-width="3" />
+  <text x="120" y="820" class="txt">AI is a computer system that can:</text>
+  <rect x="120" y="850" width="290" height="150" rx="12" fill="url(#noteBlue)" stroke="#2f2f30" stroke-width="3" />
+  <rect x="455" y="850" width="290" height="150" rx="12" fill="url(#noteYellow)" stroke="#2f2f30" stroke-width="3" />
+  <rect x="790" y="850" width="290" height="150" rx="12" fill="url(#noteGreen)" stroke="#2f2f30" stroke-width="3" />
+  <text x="220" y="910" class="subhdr">Sense</text>
+  <text x="173" y="955" class="small">(see/hear/read data)</text>
+  <text x="565" y="910" class="subhdr">Think</text>
+  <text x="505" y="955" class="small">(find patterns, reason)</text>
+  <text x="900" y="910" class="subhdr">Act</text>
+  <text x="850" y="955" class="small">(give output or action)</text>
+
+  <rect x="80" y="1060" width="510" height="370" rx="16" fill="#fffaf0" stroke="#2f2f30" stroke-width="3" />
+  <rect x="100" y="1082" width="470" height="70" rx="10" fill="#f8e293" stroke="#2f2f30" stroke-width="3" />
+  <text x="125" y="1131" class="subhdr">REAL-LIFE EXAMPLES OF AI</text>
+  <text x="120" y="1192" class="txt bold">Everyday AI</text>
+  <text x="120" y="1240" class="small">- YouTube / Netflix recommendations</text>
+  <text x="120" y="1282" class="small">- Google Maps best route</text>
+  <text x="120" y="1324" class="small">- Face unlock on phones</text>
+  <text x="120" y="1366" class="small">- Spam email filtering</text>
+  <text x="120" y="1408" class="small">- Voice assistants</text>
+
+  <rect x="610" y="1060" width="510" height="370" rx="16" fill="#fffaf0" stroke="#2f2f30" stroke-width="3" />
+  <rect x="630" y="1082" width="470" height="70" rx="10" fill="#d7ebff" stroke="#2f2f30" stroke-width="3" />
+  <text x="770" y="1131" class="subhdr" text-anchor="middle">BUSINESS AI</text>
+  <text x="650" y="1192" class="small">- Fraud detection in banks</text>
+  <text x="650" y="1234" class="small">- Customer support chatbots</text>
+  <text x="650" y="1276" class="small">- Predicting sales</text>
+  <text x="650" y="1318" class="small">- Detecting defects in factories</text>
+  <text x="650" y="1360" class="small">- Forecasting demand</text>
+
+  <rect x="80" y="1460" width="510" height="280" rx="16" fill="#fffaf0" stroke="#2f2f30" stroke-width="3" />
+  <rect x="100" y="1482" width="470" height="64" rx="10" fill="#cfe8ff" stroke="#2f2f30" stroke-width="3" />
+  <text x="335" y="1526" class="subhdr" text-anchor="middle">AI vs ML (QUICK CLARITY)</text>
+  <text x="120" y="1582" class="txt">AI is the big umbrella.</text>
+  <text x="120" y="1630" class="txt">ML is one way to build AI.</text>
+  <text x="120" y="1682" class="small"><tspan class="bold">AI</tspan> = goal (make machines intelligent)</text>
+  <text x="120" y="1724" class="small"><tspan class="bold">ML</tspan> = method (learn from data)</text>
+
+  <rect x="610" y="1460" width="510" height="280" rx="16" fill="#fffaf0" stroke="#2f2f30" stroke-width="3" />
+  <rect x="630" y="1482" width="470" height="64" rx="10" fill="#ffd9c9" stroke="#2f2f30" stroke-width="3" />
+  <text x="865" y="1526" class="subhdr" text-anchor="middle">ONE-LINE ANALOGY</text>
+  <text x="865" y="1615" class="txt" text-anchor="middle">"AI is like giving a brain</text>
+  <text x="865" y="1660" class="txt" text-anchor="middle">to a machine."</text>
+  <circle cx="775" cy="1690" r="24" fill="#ffd86a" stroke="#2f2f30" stroke-width="3" />
+  <path d="M775 1714 L775 1738" stroke="#2f2f30" stroke-width="5" />
+  <path d="M760 1738 H790" stroke="#2f2f30" stroke-width="5" />
+
+  <text x="600" y="1772" class="tiny muted" text-anchor="middle">Learning Lab AI Section Visual</text>
+</svg>
