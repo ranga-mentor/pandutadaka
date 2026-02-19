@@ -8,7 +8,7 @@ import TotoPredictor from "./components/TotoPredictor";
 import { learningTracks } from "./data/learningContent";
 import "./App.css";
 
-type Mode = "home" | "workbook" | "id-tools" | "numbers" | "java";
+type Mode = "home" | "workbook" | "id-tools" | "numbers" | "java" | "ai";
 
 type FeatureCard = {
   title: string;
@@ -59,6 +59,14 @@ const featureCards: FeatureCard[] = [
     mode: "java",
     image:
       "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    title: "AI Studio",
+    description: "Learn prompt design, model workflows, and practical AI usage patterns.",
+    action: "Open AI",
+    mode: "ai",
+    image:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80",
   },
 ];
 
@@ -139,6 +147,13 @@ function App() {
         hint: "Java 11 to Java 21",
         mode: "java",
         keywords: ["java", "jdk", "features"],
+      },
+      {
+        id: "ai",
+        label: "AI Studio",
+        hint: "Prompting and AI workflows",
+        mode: "ai",
+        keywords: ["ai", "prompt", "llm", "assistant"],
       },
     ];
 
@@ -286,6 +301,9 @@ function App() {
             <button className={mode === "java" ? "is-active" : ""} onClick={() => setMode("java")} type="button">
               <span className="java-icon" aria-hidden="true">☕</span> Java
             </button>
+            <button className={mode === "ai" ? "is-active" : ""} onClick={() => setMode("ai")} type="button">
+              <span className="ai-icon" aria-hidden="true">🤖</span> AI
+            </button>
           </nav>
           <div className="ca-header-actions">
             <div className="ca-search-box" ref={searchBoxRef}>
@@ -353,11 +371,19 @@ function App() {
               </div>
               <div className="ca-card-grid">
                 {featureCards.map((card) => (
-                  <article key={card.title} className={`ca-card ${card.mode === "java" ? "is-java" : ""}`}>
+                  <article
+                    key={card.title}
+                    className={[
+                      "ca-card",
+                      card.mode === "java" ? "is-java" : "",
+                      card.mode === "ai" ? "is-ai" : "",
+                    ].filter(Boolean).join(" ")}
+                  >
                     <img src={card.image} alt={card.title} />
                     <div className="ca-card-body">
                       <h3>
                         {card.mode === "java" && <span className="java-icon" aria-hidden="true">☕</span>}
+                        {card.mode === "ai" && <span className="ai-icon" aria-hidden="true">🤖</span>}
                         {card.title}
                       </h3>
                       <p className="ca-card-meta">{card.description}</p>
@@ -517,6 +543,36 @@ function App() {
               <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <JavaFeaturesPage />
+          </section>
+        )}
+
+        {mode === "ai" && (
+          <section className="workspace-shell">
+            <div className="workspace-head">
+              <h2>AI Studio</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <section className="tool-card ai-hero">
+              <h2>How to use AI in this lab</h2>
+              <p>
+                Start with clear prompts, provide context, and ask for structured output.
+                Validate important results before using them in production workflows.
+              </p>
+            </section>
+            <section className="bite-grid" aria-label="AI learning blocks">
+              <article className="bite-card">
+                <h3>Prompt Basics</h3>
+                <p>Define role, goal, inputs, and output format in one short prompt block.</p>
+              </article>
+              <article className="bite-card">
+                <h3>Workflow Pattern</h3>
+                <p>Draft, critique, refine, and verify. This loop improves quality quickly.</p>
+              </article>
+              <article className="bite-card">
+                <h3>Safety Check</h3>
+                <p>For finance, legal, or medical topics, cross-check with trusted primary sources.</p>
+              </article>
+            </section>
           </section>
         )}
       </main>

@@ -372,6 +372,14 @@
   vertical-align: -0.06em;
 }
 
+.ai-icon {
+  display: inline-block;
+  margin-right: 0.2rem;
+  font-size: 0.95em;
+  line-height: 1;
+  vertical-align: -0.06em;
+}
+
 .sg-icon {
   display: inline-block;
   margin-right: 0.25rem;
@@ -420,6 +428,30 @@
   color: #7f3e0d;
 }
 
+.ca-card.is-ai {
+  border-color: #3777d4;
+  box-shadow: 0 8px 20px rgba(31, 97, 190, 0.14);
+}
+
+.ca-card.is-ai .ca-card-body {
+  position: relative;
+  background: linear-gradient(180deg, #eef5ff 0%, #e7f0ff 72%, #f5f9ff 100%);
+}
+
+.ca-card.is-ai .ca-card-body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1e5cb3 0%, #3f88f2 50%, #6cb3ff 100%);
+}
+
+.ca-card.is-ai h3 {
+  color: #1e4f99;
+}
+
 [data-theme="dark"] .ca-card.is-java {
   border-color: #d39a62;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
@@ -431,6 +463,19 @@
 
 [data-theme="dark"] .ca-card.is-java h3 {
   color: #ffd7b1;
+}
+
+[data-theme="dark"] .ca-card.is-ai {
+  border-color: #5c8fdf;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .ca-card.is-ai .ca-card-body {
+  background: linear-gradient(180deg, #16243b 0%, #152335 72%, #1d2d45 100%);
+}
+
+[data-theme="dark"] .ca-card.is-ai h3 {
+  color: #d3e4ff;
 }
 
 .workspace-shell {
@@ -921,6 +966,15 @@
   color: #5f452f;
 }
 
+.ai-hero {
+  border-color: #7aa8e7;
+  background: linear-gradient(145deg, #f6f9ff 0%, #e7f0ff 70%, #edf4ff 100%);
+}
+
+.ai-hero h2 {
+  color: #1e4f99;
+}
+
 .toto-actions {
   display: flex;
   gap: 0.5rem;
@@ -1039,6 +1093,15 @@
 
 [data-theme="dark"] .java-hero p {
   color: #dcc1a6;
+}
+
+[data-theme="dark"] .ai-hero {
+  border-color: #3b5f96;
+  background: linear-gradient(145deg, #15253f 0%, #1a2b49 72%, #1f3356 100%);
+}
+
+[data-theme="dark"] .ai-hero h2 {
+  color: #d3e4ff;
 }
 
 [data-theme="dark"] .java-release {
