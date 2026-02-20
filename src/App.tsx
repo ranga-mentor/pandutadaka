@@ -129,7 +129,6 @@ function App() {
   const flipResetTimerRef = useRef<number | null>(null);
   const aiNavLockTimerRef = useRef<number | null>(null);
   const aiNavLockedRef = useRef(false);
-  const aiScrollBehaviorRef = useRef<ScrollBehavior>("auto");
   const aiProgrammaticScrollRef = useRef(false);
   const aiProgrammaticScrollTimerRef = useRef<number | null>(null);
 
@@ -336,7 +335,16 @@ function App() {
       aiNavLockedRef.current = false;
       return;
     }
-    aiScrollBehaviorRef.current = smooth ? "smooth" : "auto";
+    aiProgrammaticScrollRef.current = true;
+    if (aiProgrammaticScrollTimerRef.current) {
+      window.clearTimeout(aiProgrammaticScrollTimerRef.current);
+    }
+    aiProgrammaticScrollTimerRef.current = window.setTimeout(() => {
+      aiProgrammaticScrollRef.current = false;
+      aiProgrammaticScrollTimerRef.current = null;
+    }, smooth ? 460 : 80);
+    const left = clampedIndex * viewport.clientWidth;
+    viewport.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
     setAiSlideIndex(clampedIndex);
   }
 
@@ -358,7 +366,7 @@ function App() {
     if (!viewport) {
       return;
     }
-    const behavior = aiScrollBehaviorRef.current;
+    const left = aiSlideIndex * viewport.clientWidth;
     aiProgrammaticScrollRef.current = true;
     if (aiProgrammaticScrollTimerRef.current) {
       window.clearTimeout(aiProgrammaticScrollTimerRef.current);
@@ -366,12 +374,9 @@ function App() {
     aiProgrammaticScrollTimerRef.current = window.setTimeout(() => {
       aiProgrammaticScrollRef.current = false;
       aiProgrammaticScrollTimerRef.current = null;
-    }, behavior === "smooth" ? 460 : 80);
-
-    const left = aiSlideIndex * viewport.clientWidth;
-    viewport.scrollTo({ left, behavior });
-    aiScrollBehaviorRef.current = "auto";
-  }, [aiFullscreenOpen, aiSlideIndex, mode]);
+    }, 80);
+    viewport.scrollTo({ left, behavior: "auto" });
+  }, [aiFullscreenOpen, mode]);
 
   useEffect(() => {
     return () => {
