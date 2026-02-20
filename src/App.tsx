@@ -35,8 +35,7 @@ const featureCards: FeatureCard[] = [
     description: "Structured chapters with practice and quick checks for guided learning.",
     action: "Open Workbook",
     mode: "workbook",
-    image:
-      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+    image: "/workbook-tracks.jpg",
   },
   {
     title: "ID Tools Studio",
@@ -57,16 +56,14 @@ const featureCards: FeatureCard[] = [
     description: "Review practical updates from Java 11 through Java 21 in a single release map.",
     action: "Open Java",
     mode: "java",
-    image:
-      "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=80",
+    image: "/java-feature-explorer.jpg",
   },
   {
     title: "AI Studio",
     description: "Learn prompt design, model workflows, and practical AI usage patterns.",
     action: "Open AI",
     mode: "ai",
-    image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80",
+    image: "/ai-studio.jpg",
   },
 ];
 
