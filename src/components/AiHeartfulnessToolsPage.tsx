@@ -84,7 +84,7 @@ function AiHeartfulnessToolsPage() {
   return (
     <section className="ai-tools-page" aria-label="Heartfulness AI Mastery tools summary">
       <article className="tool-card ai-hero ai-tools-hero">
-        <h2>Heartfulness AI Mastery: Tool Summary</h2>
+        <h2>AI Tools</h2>
         <p>
           Practical summary of tools and usage patterns covered in the Heartfulness Academy AI
           Mastery journey: research, content creation, automation, and business workflows.
@@ -100,7 +100,7 @@ function AiHeartfulnessToolsPage() {
               <strong>What it is used for:</strong> {tool.usage}
             </p>
             <p>
-              <strong>How to use it in this lab:</strong> {tool.labUse}
+              <strong>Use cases:</strong> {tool.labUse}
             </p>
           </article>
         ))}

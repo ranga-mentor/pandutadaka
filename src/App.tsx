@@ -528,6 +528,16 @@ function App() {
                       card.mode === "java" ? "is-java" : "",
                       card.mode === "ai" ? "is-ai" : "",
                     ].filter(Boolean).join(" ")}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setMode(card.mode)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setMode(card.mode);
+                      }
+                    }}
+                    aria-label={`Open ${card.title}`}
                   >
                     <img src={card.image} alt={card.title} />
                     <div className="ca-card-body">
@@ -537,9 +547,6 @@ function App() {
                         {card.title}
                       </h3>
                       <p className="ca-card-meta">{card.description}</p>
-                      <button type="button" className="ca-secondary-btn" onClick={() => setMode(card.mode)}>
-                        {card.action}
-                      </button>
                     </div>
                   </article>
                 ))}
@@ -715,7 +722,7 @@ function App() {
                 onClick={() => setAiStudioPage("heartfulness")}
                 type="button"
               >
-                Heartfulness AI Mastery
+                AI Tools
               </button>
             </section>
             {aiStudioPage === "visuals" ? (
