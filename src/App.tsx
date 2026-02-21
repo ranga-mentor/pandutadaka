@@ -89,6 +89,11 @@ const aiPosterSlides = [
     alt: "What are LLMs visual guide covering what large language models are, how they work, uses, and examples",
     caption: "LLM poster: what LLMs are, how they work, and common use cases.",
   },
+  {
+    src: "/RAG.png",
+    alt: "What is RAG visual guide explaining retrieval-augmented generation and how search plus generation improves answers",
+    caption: "RAG poster: retrieval + generation workflow for more reliable AI answers.",
+  },
 ];
 
 function GitZonesDiagram() {
