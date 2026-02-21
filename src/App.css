@@ -1085,6 +1085,58 @@
   color: #1e4f99;
 }
 
+.ai-page-switcher {
+  margin-bottom: 0.8rem;
+}
+
+.ai-tools-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.ai-tools-hero p {
+  max-width: 78ch;
+}
+
+.ai-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 0.85rem;
+}
+
+.ai-tool-card {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.ai-tool-card h3 {
+  margin: 0;
+  font-size: 1.03rem;
+  color: var(--accent);
+}
+
+.ai-tool-category {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ai-tool-card p {
+  margin: 0;
+}
+
+.ai-usage-flow ol {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.ai-usage-flow li + li {
+  margin-top: 0.3rem;
+}
+
 .ai-carousel {
   --ai-page-height: clamp(360px, calc(100dvh - 280px), 760px);
   width: min(100%, max(50vw, calc(var(--ai-page-height) * 0.72)));
@@ -1434,6 +1486,10 @@
   color: #d3e4ff;
 }
 
+[data-theme="dark"] .ai-tool-card h3 {
+  color: #d3e4ff;
+}
+
 [data-theme="dark"] .java-release {
   border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
   background: linear-gradient(
@@ -1526,6 +1582,10 @@
   }
 
   .java-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-tools-grid {
     grid-template-columns: 1fr;
   }
 }

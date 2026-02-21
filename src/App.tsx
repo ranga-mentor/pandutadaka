@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CssBaseline, IconButton, ThemeProvider, createTheme } from "@mui/material";
 import { trackEvent } from "./analytics";
+import AiHeartfulnessToolsPage from "./components/AiHeartfulnessToolsPage";
 import JavaFeaturesPage from "./components/JavaFeaturesPage";
 import NricTools from "./components/NricTools";
 import SingaporeTotoPage from "./components/SingaporeTotoPage";
@@ -118,6 +119,7 @@ function App() {
   });
   const [trackIndex, setTrackIndex] = useState(0);
   const [lessonIndex, setLessonIndex] = useState(0);
+  const [aiStudioPage, setAiStudioPage] = useState<"visuals" | "heartfulness">("visuals");
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
   const aiCarouselRef = useRef<HTMLDivElement | null>(null);
   const [aiSlideIndex, setAiSlideIndex] = useState(0);
@@ -180,9 +182,9 @@ function App() {
       {
         id: "ai",
         label: "AI Studio",
-        hint: "Prompting and AI workflows",
+        hint: "Prompting, AI workflows, and Heartfulness tools",
         mode: "ai",
-        keywords: ["ai", "prompt", "llm", "assistant"],
+        keywords: ["ai", "prompt", "llm", "assistant", "heartfulness", "notebooklm", "perplexity", "gemini"],
       },
     ];
 
@@ -350,6 +352,7 @@ function App() {
       return;
     }
     setAiSlideIndex(0);
+    setAiStudioPage("visuals");
     requestAnimationFrame(() => {
       scrollToAiSlide(0, false);
     });
@@ -694,169 +697,191 @@ function App() {
               <h2>AI Studio</h2>
               <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
-            <section className="ai-carousel" aria-label="AI visual pages">
-              <div className="ai-carousel-track">
-                <button
-                  type="button"
-                  className="ai-carousel-arrow"
-                  onClick={() => scrollToAiSlide(aiSlideIndex - 1)}
-                  disabled={aiSlideIndex === 0}
-                  aria-label="Previous page"
-                >
-                  ‹
-                </button>
-                <div
-                  className={[
-                    "ai-carousel-viewport",
-                    aiFlipDirection === "next" ? "is-flipping-next" : "",
-                    aiFlipDirection === "prev" ? "is-flipping-prev" : "",
-                  ].filter(Boolean).join(" ")}
-                  ref={aiCarouselRef}
-                  onScroll={(event) => {
-                    if (aiProgrammaticScrollRef.current) {
-                      return;
-                    }
-                    const target = event.currentTarget;
-                    if (!target.clientWidth) {
-                      return;
-                    }
-                    const nextIndex = Math.round(target.scrollLeft / target.clientWidth);
-                    if (nextIndex !== aiSlideIndex) {
-                      setAiSlideIndex(nextIndex);
-                    }
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "ArrowLeft") {
-                      event.preventDefault();
-                      scrollToAiSlide(aiSlideIndex - 1);
-                    }
-                    if (event.key === "ArrowRight") {
-                      event.preventDefault();
-                      scrollToAiSlide(aiSlideIndex + 1);
-                    }
-                  }}
-                  tabIndex={0}
-                >
-                  {aiPosterSlides.map((slide) => (
-                    <figure
-                      className="ai-poster ai-slide"
-                      key={slide.src}
-                      onClick={() => setAiFullscreenOpen(true)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          setAiFullscreenOpen(true);
-                        }
-                      }}
-                      aria-label="Open page in fullscreen"
-                    >
-                      <img src={slide.src} alt={slide.alt} width={1024} height={1536} />
-                      <figcaption>{slide.caption}</figcaption>
-                    </figure>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="ai-carousel-arrow"
-                  onClick={() => scrollToAiSlide(aiSlideIndex + 1)}
-                  disabled={aiSlideIndex === aiPosterSlides.length - 1}
-                  aria-label="Next page"
-                >
-                  ›
-                </button>
-              </div>
-              <div className="ai-carousel-dots" role="tablist" aria-label="AI page indicators">
-                {aiPosterSlides.map((slide, index) => (
-                  <button
-                    key={slide.src}
-                    type="button"
-                    className={index === aiSlideIndex ? "is-active" : ""}
-                    onClick={() => scrollToAiSlide(index)}
-                    aria-label={`Go to page ${index + 1}`}
-                  />
-                ))}
-              </div>
-              {aiFullscreenOpen && (
-                <div
-                  className="ai-fullscreen-overlay"
-                  role="dialog"
-                  aria-modal="true"
-                  aria-label="AI page fullscreen"
-                  onClick={(event) => {
-                    if (event.target === event.currentTarget) {
-                      setAiFullscreenOpen(false);
-                    }
-                  }}
-                >
-                  <div className="ai-fullscreen-content">
+            <section className="country-switcher ai-page-switcher" aria-label="AI Studio pages">
+              <button
+                className={aiStudioPage === "visuals" ? "is-active" : ""}
+                onClick={() => setAiStudioPage("visuals")}
+                type="button"
+              >
+                Visual Flipbook
+              </button>
+              <button
+                className={aiStudioPage === "heartfulness" ? "is-active" : ""}
+                onClick={() => setAiStudioPage("heartfulness")}
+                type="button"
+              >
+                Heartfulness AI Mastery
+              </button>
+            </section>
+            {aiStudioPage === "visuals" ? (
+              <>
+                <section className="ai-carousel" aria-label="AI visual pages">
+                  <div className="ai-carousel-track">
                     <button
                       type="button"
-                      className="ai-fullscreen-nav prev"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        scrollToAiSlide(aiSlideIndex - 1, false);
-                      }}
+                      className="ai-carousel-arrow"
+                      onClick={() => scrollToAiSlide(aiSlideIndex - 1)}
                       disabled={aiSlideIndex === 0}
                       aria-label="Previous page"
                     >
                       ‹
                     </button>
-                    <button
-                      type="button"
-                      className="ai-fullscreen-close"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setAiFullscreenOpen(false);
+                    <div
+                      className={[
+                        "ai-carousel-viewport",
+                        aiFlipDirection === "next" ? "is-flipping-next" : "",
+                        aiFlipDirection === "prev" ? "is-flipping-prev" : "",
+                      ].filter(Boolean).join(" ")}
+                      ref={aiCarouselRef}
+                      onScroll={(event) => {
+                        if (aiProgrammaticScrollRef.current) {
+                          return;
+                        }
+                        const target = event.currentTarget;
+                        if (!target.clientWidth) {
+                          return;
+                        }
+                        const nextIndex = Math.round(target.scrollLeft / target.clientWidth);
+                        if (nextIndex !== aiSlideIndex) {
+                          setAiSlideIndex(nextIndex);
+                        }
                       }}
-                      aria-label="Close fullscreen"
+                      onKeyDown={(event) => {
+                        if (event.key === "ArrowLeft") {
+                          event.preventDefault();
+                          scrollToAiSlide(aiSlideIndex - 1);
+                        }
+                        if (event.key === "ArrowRight") {
+                          event.preventDefault();
+                          scrollToAiSlide(aiSlideIndex + 1);
+                        }
+                      }}
+                      tabIndex={0}
                     >
-                      ✕
-                    </button>
-                    <img
-                      src={aiPosterSlides[aiSlideIndex].src}
-                      alt={aiPosterSlides[aiSlideIndex].alt}
-                      width={1024}
-                      height={1536}
-                    />
+                      {aiPosterSlides.map((slide) => (
+                        <figure
+                          className="ai-poster ai-slide"
+                          key={slide.src}
+                          onClick={() => setAiFullscreenOpen(true)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              setAiFullscreenOpen(true);
+                            }
+                          }}
+                          aria-label="Open page in fullscreen"
+                        >
+                          <img src={slide.src} alt={slide.alt} width={1024} height={1536} />
+                          <figcaption>{slide.caption}</figcaption>
+                        </figure>
+                      ))}
+                    </div>
                     <button
                       type="button"
-                      className="ai-fullscreen-nav next"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        scrollToAiSlide(aiSlideIndex + 1, false);
-                      }}
+                      className="ai-carousel-arrow"
+                      onClick={() => scrollToAiSlide(aiSlideIndex + 1)}
                       disabled={aiSlideIndex === aiPosterSlides.length - 1}
                       aria-label="Next page"
                     >
                       ›
                     </button>
                   </div>
-                </div>
-              )}
-            </section>
-            <section className="bite-grid" aria-label="AI learning blocks">
-              <article className="bite-card">
-                <h3>Prompt Basics</h3>
-                <p>Define role, goal, inputs, and output format in one short prompt block.</p>
-              </article>
-              <article className="bite-card">
-                <h3>Workflow Pattern</h3>
-                <p>Draft, critique, refine, and verify. This loop improves quality quickly.</p>
-              </article>
-              <article className="bite-card">
-                <h3>Safety Check</h3>
-                <p>For finance, legal, or medical topics, cross-check with trusted primary sources.</p>
-              </article>
-            </section>
-            <section className="tool-card ai-hero">
-              <h2>How to use AI in this lab</h2>
-              <p>
-                Start with clear prompts, provide context, and ask for structured output.
-                Validate important results before using them in production workflows.
-              </p>
-            </section>
+                  <div className="ai-carousel-dots" role="tablist" aria-label="AI page indicators">
+                    {aiPosterSlides.map((slide, index) => (
+                      <button
+                        key={slide.src}
+                        type="button"
+                        className={index === aiSlideIndex ? "is-active" : ""}
+                        onClick={() => scrollToAiSlide(index)}
+                        aria-label={`Go to page ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                  {aiFullscreenOpen && (
+                    <div
+                      className="ai-fullscreen-overlay"
+                      role="dialog"
+                      aria-modal="true"
+                      aria-label="AI page fullscreen"
+                      onClick={(event) => {
+                        if (event.target === event.currentTarget) {
+                          setAiFullscreenOpen(false);
+                        }
+                      }}
+                    >
+                      <div className="ai-fullscreen-content">
+                        <button
+                          type="button"
+                          className="ai-fullscreen-nav prev"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            scrollToAiSlide(aiSlideIndex - 1, false);
+                          }}
+                          disabled={aiSlideIndex === 0}
+                          aria-label="Previous page"
+                        >
+                          ‹
+                        </button>
+                        <button
+                          type="button"
+                          className="ai-fullscreen-close"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setAiFullscreenOpen(false);
+                          }}
+                          aria-label="Close fullscreen"
+                        >
+                          ✕
+                        </button>
+                        <img
+                          src={aiPosterSlides[aiSlideIndex].src}
+                          alt={aiPosterSlides[aiSlideIndex].alt}
+                          width={1024}
+                          height={1536}
+                        />
+                        <button
+                          type="button"
+                          className="ai-fullscreen-nav next"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            scrollToAiSlide(aiSlideIndex + 1, false);
+                          }}
+                          disabled={aiSlideIndex === aiPosterSlides.length - 1}
+                          aria-label="Next page"
+                        >
+                          ›
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </section>
+                <section className="bite-grid" aria-label="AI learning blocks">
+                  <article className="bite-card">
+                    <h3>Prompt Basics</h3>
+                    <p>Define role, goal, inputs, and output format in one short prompt block.</p>
+                  </article>
+                  <article className="bite-card">
+                    <h3>Workflow Pattern</h3>
+                    <p>Draft, critique, refine, and verify. This loop improves quality quickly.</p>
+                  </article>
+                  <article className="bite-card">
+                    <h3>Safety Check</h3>
+                    <p>For finance, legal, or medical topics, cross-check with trusted primary sources.</p>
+                  </article>
+                </section>
+                <section className="tool-card ai-hero">
+                  <h2>How to use AI in this lab</h2>
+                  <p>
+                    Start with clear prompts, provide context, and ask for structured output.
+                    Validate important results before using them in production workflows.
+                  </p>
+                </section>
+              </>
+            ) : (
+              <AiHeartfulnessToolsPage />
+            )}
           </section>
         )}
       </main>
