@@ -16,8 +16,16 @@ import {
 
 const PREFIX_OPTIONS: NricPrefixSelection[] = ["AUTO", "S", "T", "F", "G", "M"];
 
-export default function NricTools() {
-  const [countryPage, setCountryPage] = useState<"sg" | "my" | "hk">("sg");
+type CountryPage = "sg" | "my" | "hk";
+
+type NricToolsProps = {
+  countryPage?: CountryPage;
+  onCountryPageChange?: (next: CountryPage) => void;
+};
+
+export default function NricTools({ countryPage = "sg", onCountryPageChange }: NricToolsProps) {
+  const [internalCountryPage, setInternalCountryPage] = useState<CountryPage>(countryPage);
+  const activeCountryPage = onCountryPageChange ? countryPage : internalCountryPage;
 
   const [valueToValidate, setValueToValidate] = useState("");
   const [prefixSelection, setPrefixSelection] =
@@ -100,6 +108,14 @@ export default function NricTools() {
     hk: "Hong Kong ID Generation Logic",
   };
 
+  function changeCountryPage(next: CountryPage) {
+    if (onCountryPageChange) {
+      onCountryPageChange(next);
+      return;
+    }
+    setInternalCountryPage(next);
+  }
+
   return (
     <>
       <section className="id-tools-hero">
@@ -109,24 +125,24 @@ export default function NricTools() {
 
       <section className="country-switcher id-country-switcher">
         <button
-          className={countryPage === "sg" ? "is-active" : ""}
-          onClick={() => setCountryPage("sg")}
+          className={activeCountryPage === "sg" ? "is-active" : ""}
+          onClick={() => changeCountryPage("sg")}
           type="button"
         >
           <span className="country-flag" aria-hidden="true">🇸🇬</span>
           <span>Singapore NRIC/FIN</span>
         </button>
         <button
-          className={countryPage === "my" ? "is-active" : ""}
-          onClick={() => setCountryPage("my")}
+          className={activeCountryPage === "my" ? "is-active" : ""}
+          onClick={() => changeCountryPage("my")}
           type="button"
         >
           <span className="country-flag" aria-hidden="true">🇲🇾</span>
           <span>Malaysia MyKad</span>
         </button>
         <button
-          className={countryPage === "hk" ? "is-active" : ""}
-          onClick={() => setCountryPage("hk")}
+          className={activeCountryPage === "hk" ? "is-active" : ""}
+          onClick={() => changeCountryPage("hk")}
           type="button"
         >
           <span className="country-flag" aria-hidden="true">🇭🇰</span>
@@ -134,7 +150,7 @@ export default function NricTools() {
         </button>
       </section>
 
-      {countryPage === "sg" && (
+      {activeCountryPage === "sg" && (
         <section className="nric-tools">
           <article className="tool-card id-tool-card">
             <h2>Singapore NRIC/FIN Validator</h2>
@@ -221,7 +237,7 @@ export default function NricTools() {
         </section>
       )}
 
-      {countryPage === "my" && (
+      {activeCountryPage === "my" && (
         <section className="nric-tools">
           <article className="tool-card id-tool-card">
             <h2>Malaysia MyKad Validator</h2>
@@ -291,7 +307,7 @@ export default function NricTools() {
         </section>
       )}
 
-      {countryPage === "hk" && (
+      {activeCountryPage === "hk" && (
         <section className="nric-tools">
           <article className="tool-card id-tool-card">
             <h2>Hong Kong HKID Validator</h2>

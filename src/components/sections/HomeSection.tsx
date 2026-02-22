@@ -11,6 +11,9 @@ export default function HomeSection({ cards, onOpenMode }: HomeSectionProps) {
       <div className="ca-section-head">
         <h2>Featured Learning Blocks</h2>
       </div>
+      <p className="ca-home-note">
+        This site is a personal learning notebook, curated to organize and revisit practical concepts.
+      </p>
       <div className="ca-card-grid">
         {cards.map((card) => (
           <article

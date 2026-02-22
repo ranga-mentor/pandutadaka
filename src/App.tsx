@@ -26,6 +26,7 @@ function getTrackLessons(trackIdx: number) {
 function buildRoute(
   mode: Mode,
   numbersMode: "4d" | "toto",
+  idCountryMode: "sg" | "my" | "hk",
   aiStudioPage: "visuals" | "heartfulness",
   trackIndex: number,
   lessonIndex: number,
@@ -39,6 +40,9 @@ function buildRoute(
       lesson: lessons[safeLessonIndex].lesson.id,
     });
     return `/dev-notes?${params.toString()}`;
+  }
+  if (mode === "id-tools") {
+    return `/id-tools/${idCountryMode}`;
   }
   if (mode === "numbers") {
     return `/number-lab/${numbersMode}`;
@@ -65,8 +69,14 @@ function parseRoute(pathname: string, search: string): ParsedRoute {
     );
     return { mode: "workbook", trackIndex, lessonIndex };
   }
-  if (pathname === "/id-tools") {
-    return { mode: "id-tools" };
+  if (pathname === "/id-tools/hk") {
+    return { mode: "id-tools", idCountryMode: "hk" };
+  }
+  if (pathname === "/id-tools/my") {
+    return { mode: "id-tools", idCountryMode: "my" };
+  }
+  if (pathname === "/id-tools/sg" || pathname === "/id-tools") {
+    return { mode: "id-tools", idCountryMode: "sg" };
   }
   if (pathname === "/number-lab/toto") {
     return { mode: "numbers", numbersMode: "toto" };
@@ -104,10 +114,29 @@ function parseRoute(pathname: string, search: string): ParsedRoute {
 function getSeoMeta(
   mode: Mode,
   numbersMode: "4d" | "toto",
+  idCountryMode: "sg" | "my" | "hk",
   aiStudioPage: "visuals" | "heartfulness",
   activeTrackTitle: string,
   activeLessonTitle: string,
 ): Pick<SeoMeta, "title" | "description"> {
+  if (mode === "id-tools" && idCountryMode === "sg") {
+    return {
+      title: "Singapore NRIC/FIN Tools | Learning Lab",
+      description: "Validate and generate Singapore NRIC/FIN format examples for educational use.",
+    };
+  }
+  if (mode === "id-tools" && idCountryMode === "my") {
+    return {
+      title: "Malaysia MyKad Tools | Learning Lab",
+      description: "Validate and generate Malaysia MyKad format examples for educational use.",
+    };
+  }
+  if (mode === "id-tools" && idCountryMode === "hk") {
+    return {
+      title: "Hong Kong HKID Tools | Learning Lab",
+      description: "Validate and generate Hong Kong HKID format examples for educational use.",
+    };
+  }
   if (mode === "numbers" && numbersMode === "4d") {
     return {
       title: "Singapore 4D Predictor | Learning Lab",
@@ -158,6 +187,7 @@ function GitZonesDiagram() {
 function App() {
   const [mode, setMode] = useState<Mode>("home");
   const [numbersMode, setNumbersMode] = useState<"4d" | "toto">("4d");
+  const [idCountryMode, setIdCountryMode] = useState<"sg" | "my" | "hk">("sg");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
@@ -213,6 +243,30 @@ function App() {
         hint: "Singapore, Malaysia, Hong Kong",
         mode: "id-tools",
         keywords: ["nric", "mykad", "hkid", "validator", "generator"],
+      },
+      {
+        id: "id-tools-sg",
+        label: "Singapore NRIC/FIN",
+        hint: "ID tools - Singapore",
+        mode: "id-tools",
+        idCountryMode: "sg",
+        keywords: ["singapore", "nric", "fin"],
+      },
+      {
+        id: "id-tools-my",
+        label: "Malaysia MyKad",
+        hint: "ID tools - Malaysia",
+        mode: "id-tools",
+        idCountryMode: "my",
+        keywords: ["malaysia", "mykad"],
+      },
+      {
+        id: "id-tools-hk",
+        label: "Hong Kong HKID",
+        hint: "ID tools - Hong Kong",
+        mode: "id-tools",
+        idCountryMode: "hk",
+        keywords: ["hong kong", "hkid"],
       },
       {
         id: "numbers-4d",
@@ -360,6 +414,9 @@ function App() {
       if (parsed.numbersMode) {
         setNumbersMode(parsed.numbersMode);
       }
+      if (parsed.idCountryMode) {
+        setIdCountryMode(parsed.idCountryMode);
+      }
       if (parsed.aiStudioPage) {
         setAiStudioPage(parsed.aiStudioPage);
       }
@@ -387,12 +444,12 @@ function App() {
       skipHistoryPushRef.current = false;
       return;
     }
-    const nextRoute = buildRoute(mode, numbersMode, aiStudioPage, trackIndex, lessonIndex);
+    const nextRoute = buildRoute(mode, numbersMode, idCountryMode, aiStudioPage, trackIndex, lessonIndex);
     const currentRoute = `${window.location.pathname}${window.location.search}`;
     if (nextRoute !== currentRoute) {
       window.history.pushState({}, "", nextRoute);
     }
-  }, [mode, numbersMode, aiStudioPage, trackIndex, lessonIndex]);
+  }, [mode, numbersMode, idCountryMode, aiStudioPage, trackIndex, lessonIndex]);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", themeMode);
@@ -400,11 +457,12 @@ function App() {
   }, [themeMode]);
 
   useEffect(() => {
-    const routePath = buildRoute(mode, numbersMode, aiStudioPage, trackIndex, lessonIndex);
+    const routePath = buildRoute(mode, numbersMode, idCountryMode, aiStudioPage, trackIndex, lessonIndex);
     const canonical = `${SEO_BASE_URL}${routePath}`;
     const seo = getSeoMeta(
       mode,
       numbersMode,
+      idCountryMode,
       aiStudioPage,
       activeTrack.title,
       activeLesson.lesson.title,
@@ -464,7 +522,7 @@ function App() {
         name: "Learning Lab",
       },
     });
-  }, [mode, numbersMode, aiStudioPage, trackIndex, lessonIndex, activeTrack.title, activeLesson.lesson.title]);
+  }, [mode, numbersMode, idCountryMode, aiStudioPage, trackIndex, lessonIndex, activeTrack.title, activeLesson.lesson.title]);
 
   useEffect(() => {
     if (mode !== "workbook" || !activeLesson) {
@@ -497,6 +555,9 @@ function App() {
     setMode(item.mode);
     if (item.mode === "numbers" && item.numbersMode) {
       setNumbersMode(item.numbersMode);
+    }
+    if (item.mode === "id-tools" && item.idCountryMode) {
+      setIdCountryMode(item.idCountryMode);
     }
     if (item.mode === "workbook") {
       if (typeof item.trackIndex === "number") {
@@ -740,7 +801,7 @@ function App() {
             <div className="workspace-head">
               <h2>ID Tools</h2>
             </div>
-            <NricTools />
+            <NricTools countryPage={idCountryMode} onCountryPageChange={setIdCountryMode} />
           </section>
         )}
 

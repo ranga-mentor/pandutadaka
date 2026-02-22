@@ -31,6 +31,7 @@ export type SearchResult = {
   hint: string;
   mode: Mode;
   numbersMode?: "4d" | "toto";
+  idCountryMode?: "sg" | "my" | "hk";
   trackIndex?: number;
   lessonIndex?: number;
   keywords?: string[];
@@ -45,6 +46,7 @@ export type SeoMeta = {
 export type ParsedRoute = {
   mode: Mode;
   numbersMode?: "4d" | "toto";
+  idCountryMode?: "sg" | "my" | "hk";
   aiStudioPage?: "visuals" | "heartfulness";
   trackIndex?: number;
   lessonIndex?: number;
