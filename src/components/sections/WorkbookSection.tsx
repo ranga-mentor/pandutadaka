@@ -89,7 +89,7 @@ export default function WorkbookSection({
             <section aria-label="Container visuals">
               <figure className="zone-figure git-poster-figure">
                 <img
-                  src="/containers-image-vs-container.png"
+                  src="/containers-image-vs-container.jpg"
                   alt="Image versus container blueprint and running instance"
                   width={1366}
                   height={768}
@@ -105,7 +105,7 @@ export default function WorkbookSection({
               </figure>
               <figure className="zone-figure git-poster-figure">
                 <img
-                  src="/containers-docker-to-pods.png"
+                  src="/containers-docker-to-pods.jpg"
                   alt="From Docker to Pods with Kubernetes and OpenShift"
                   width={1366}
                   height={768}
