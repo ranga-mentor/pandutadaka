@@ -666,6 +666,21 @@
   font-size: 1.1rem;
 }
 
+.git-poster-figure {
+  margin: 0.25rem 0 0.9rem;
+}
+
+.git-poster-figure img {
+  width: min(100%, 680px);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-alt);
+  box-shadow: var(--shadow);
+}
+
 .bite-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));

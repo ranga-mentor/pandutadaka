@@ -31,7 +31,7 @@ export type LearningTrack = {
 export const learningTracks: LearningTrack[] = [
   {
     id: "git-pega",
-    title: "Git for Pega",
+    title: "Git",
     subtitle: "",
     sourceLabel: "",
     modules: [

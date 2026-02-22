@@ -46,6 +46,14 @@ type SeoMeta = {
   path: string;
 };
 
+type ParsedRoute = {
+  mode: Mode;
+  numbersMode?: "4d" | "toto";
+  aiStudioPage?: "visuals" | "heartfulness";
+  trackIndex?: number;
+  lessonIndex?: number;
+};
+
 const featureCards: FeatureCard[] = [
   {
     title: "Workbook Tracks",
@@ -122,9 +130,9 @@ const seoByMode: Record<Mode, SeoMeta> = {
     path: "/",
   },
   workbook: {
-    title: "Workbook | Learning Lab",
+    title: "Dev Notes | Learning Lab",
     description: "Structured workbook tracks and guided lessons with practice and quick checks.",
-    path: "/workbook",
+    path: "/dev-notes",
   },
   "id-tools": {
     title: "ID Tools Studio | Learning Lab",
@@ -172,17 +180,137 @@ const seoByMode: Record<Mode, SeoMeta> = {
   },
 };
 
+function getTrackLessons(trackIdx: number) {
+  return learningTracks[trackIdx].modules.flatMap((module) =>
+    module.lessons.map((lesson) => ({ moduleTitle: module.title, lesson })),
+  );
+}
+
+function buildRoute(
+  mode: Mode,
+  numbersMode: "4d" | "toto",
+  aiStudioPage: "visuals" | "heartfulness",
+  trackIndex: number,
+  lessonIndex: number,
+): string {
+  if (mode === "workbook") {
+    const safeTrackIndex = Math.max(0, Math.min(trackIndex, learningTracks.length - 1));
+    const lessons = getTrackLessons(safeTrackIndex);
+    const safeLessonIndex = Math.max(0, Math.min(lessonIndex, lessons.length - 1));
+    const params = new URLSearchParams({
+      track: learningTracks[safeTrackIndex].id,
+      lesson: lessons[safeLessonIndex].lesson.id,
+    });
+    return `/dev-notes?${params.toString()}`;
+  }
+  if (mode === "numbers") {
+    return `/number-lab/${numbersMode}`;
+  }
+  if (mode === "ai") {
+    return aiStudioPage === "heartfulness" ? "/ai-studio/tools" : "/ai-studio/visuals";
+  }
+  return seoByMode[mode].path;
+}
+
+function parseRoute(pathname: string, search: string): ParsedRoute {
+  if (pathname === "/dev-notes") {
+    const params = new URLSearchParams(search);
+    const requestedTrack = params.get("track");
+    const trackIndex = Math.max(
+      0,
+      learningTracks.findIndex((track) => track.id === requestedTrack),
+    );
+    const lessons = getTrackLessons(trackIndex);
+    const requestedLesson = params.get("lesson");
+    const lessonIndex = Math.max(
+      0,
+      lessons.findIndex((entry) => entry.lesson.id === requestedLesson),
+    );
+    return { mode: "workbook", trackIndex, lessonIndex };
+  }
+  if (pathname === "/id-tools") {
+    return { mode: "id-tools" };
+  }
+  if (pathname === "/number-lab/toto") {
+    return { mode: "numbers", numbersMode: "toto" };
+  }
+  if (pathname === "/number-lab/4d" || pathname === "/number-lab") {
+    return { mode: "numbers", numbersMode: "4d" };
+  }
+  if (pathname === "/java") {
+    return { mode: "java" };
+  }
+  if (pathname === "/ai-studio/tools") {
+    return { mode: "ai", aiStudioPage: "heartfulness" };
+  }
+  if (pathname === "/ai-studio/visuals" || pathname === "/ai-studio") {
+    return { mode: "ai", aiStudioPage: "visuals" };
+  }
+  if (pathname === "/privacy-policy") {
+    return { mode: "privacy" };
+  }
+  if (pathname === "/terms-of-use") {
+    return { mode: "terms" };
+  }
+  if (pathname === "/disclaimer") {
+    return { mode: "disclaimer" };
+  }
+  if (pathname === "/contact") {
+    return { mode: "contact" };
+  }
+  return { mode: "home" };
+}
+
+function getSeoMeta(
+  mode: Mode,
+  numbersMode: "4d" | "toto",
+  aiStudioPage: "visuals" | "heartfulness",
+  activeTrackTitle: string,
+  activeLessonTitle: string,
+): Pick<SeoMeta, "title" | "description"> {
+  if (mode === "numbers" && numbersMode === "4d") {
+    return {
+      title: "Singapore 4D Predictor | Learning Lab",
+      description:
+        "Educational Singapore 4D predictor page with probability-driven picks and data-source references.",
+    };
+  }
+  if (mode === "numbers" && numbersMode === "toto") {
+    return {
+      title: "Singapore Toto Predictor | Learning Lab",
+      description:
+        "Educational Singapore Toto analyzer with history-based generated sets and weighted number insights.",
+    };
+  }
+  if (mode === "ai" && aiStudioPage === "heartfulness") {
+    return {
+      title: "AI Tools | Learning Lab",
+      description:
+        "Useful AI tools and use cases for research, writing, automation, video, and productivity workflows.",
+    };
+  }
+  if (mode === "workbook") {
+    return {
+      title: `${activeLessonTitle} | ${activeTrackTitle} | Learning Lab`,
+      description: `Dev Notes lesson: ${activeLessonTitle} in ${activeTrackTitle}.`,
+    };
+  }
+  return {
+    title: seoByMode[mode].title,
+    description: seoByMode[mode].description,
+  };
+}
+
 function GitZonesDiagram() {
   return (
-    <figure className="zone-figure" aria-label="Git three zone flow">
-      <div className="zone-flow">
-        <div className="zone-box">Working Directory</div>
-        <div className="zone-arrow">git add</div>
-        <div className="zone-box">Staging Area</div>
-        <div className="zone-arrow">git commit</div>
-        <div className="zone-box">Repository (commits)</div>
-      </div>
-      <figcaption>The Git 3 zone universe</figcaption>
+    <figure className="zone-figure git-poster-figure" aria-label="Daily Git commands visual guide">
+      <img
+        src="/GIT.jpg"
+        alt="Daily Git commands visual guide for busy developers"
+        width={1024}
+        height={1536}
+      />
+      <figcaption>Daily Git commands quick guide</figcaption>
     </figure>
   );
 }
@@ -211,6 +339,8 @@ function App() {
   const aiNavLockedRef = useRef(false);
   const aiProgrammaticScrollRef = useRef(false);
   const aiProgrammaticScrollTimerRef = useRef<number | null>(null);
+  const skipHistoryPushRef = useRef(false);
+  const hasInitializedRouteRef = useRef(false);
 
   const activeTrack = learningTracks[trackIndex];
   const flatLessons = useMemo(
@@ -229,6 +359,13 @@ function App() {
         hint: "Home page",
         mode: "home",
         keywords: ["home", "dashboard"],
+      },
+      {
+        id: "dev-notes",
+        label: "Dev Notes",
+        hint: "Workbook track navigation",
+        mode: "workbook",
+        keywords: ["dev notes", "workbook", "tracks"],
       },
       {
         id: "id-tools",
@@ -362,13 +499,62 @@ function App() {
   );
 
   useEffect(() => {
+    function applyRoute() {
+      const parsed = parseRoute(window.location.pathname, window.location.search);
+      skipHistoryPushRef.current = true;
+      setMode(parsed.mode);
+      if (parsed.numbersMode) {
+        setNumbersMode(parsed.numbersMode);
+      }
+      if (parsed.aiStudioPage) {
+        setAiStudioPage(parsed.aiStudioPage);
+      }
+      if (typeof parsed.trackIndex === "number") {
+        setTrackIndex(parsed.trackIndex);
+      }
+      if (typeof parsed.lessonIndex === "number") {
+        setLessonIndex(parsed.lessonIndex);
+      }
+    }
+
+    applyRoute();
+    hasInitializedRouteRef.current = true;
+    window.addEventListener("popstate", applyRoute);
+    return () => {
+      window.removeEventListener("popstate", applyRoute);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hasInitializedRouteRef.current) {
+      return;
+    }
+    if (skipHistoryPushRef.current) {
+      skipHistoryPushRef.current = false;
+      return;
+    }
+    const nextRoute = buildRoute(mode, numbersMode, aiStudioPage, trackIndex, lessonIndex);
+    const currentRoute = `${window.location.pathname}${window.location.search}`;
+    if (nextRoute !== currentRoute) {
+      window.history.pushState({}, "", nextRoute);
+    }
+  }, [mode, numbersMode, aiStudioPage, trackIndex, lessonIndex]);
+
+  useEffect(() => {
     document.documentElement.setAttribute("data-theme", themeMode);
     window.localStorage.setItem("theme", themeMode);
   }, [themeMode]);
 
   useEffect(() => {
-    const seo = seoByMode[mode];
-    const canonical = `${SEO_BASE_URL}${seo.path}`;
+    const routePath = buildRoute(mode, numbersMode, aiStudioPage, trackIndex, lessonIndex);
+    const canonical = `${SEO_BASE_URL}${routePath}`;
+    const seo = getSeoMeta(
+      mode,
+      numbersMode,
+      aiStudioPage,
+      activeTrack.title,
+      activeLesson.lesson.title,
+    );
     document.title = seo.title;
 
     function upsertMeta(
@@ -424,7 +610,7 @@ function App() {
         name: "Learning Lab",
       },
     });
-  }, [mode]);
+  }, [mode, numbersMode, aiStudioPage, trackIndex, lessonIndex, activeTrack.title, activeLesson.lesson.title]);
 
   useEffect(() => {
     if (mode !== "workbook" || !activeLesson) {
@@ -604,7 +790,7 @@ function App() {
           </button>
           <nav className="ca-nav" aria-label="Primary sections">
             <button className={mode === "workbook" ? "is-active" : ""} onClick={() => setMode("workbook")} type="button">
-              Workbook
+              Dev Notes
             </button>
             <button className={mode === "id-tools" ? "is-active" : ""} onClick={() => setMode("id-tools")} type="button">
               ID Tools
@@ -723,7 +909,6 @@ function App() {
           <section className="workspace-shell">
             <div className="workspace-head">
               <h2>{activeTrack.title}</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <section className="track-switcher">
               {learningTracks.map((track, index) => (
@@ -765,7 +950,6 @@ function App() {
               <article className="content">
                 <h2 className="chapter-title">Chapter {lessonIndex + 1} - {activeLesson.lesson.title}</h2>
                 <p className="chapter-intro">{activeLesson.lesson.objective}</p>
-                <p className="meta">{activeLesson.moduleTitle} • {activeLesson.lesson.time}</p>
 
                 {activeLesson.lesson.id === "zones" && <GitZonesDiagram />}
 
@@ -824,7 +1008,6 @@ function App() {
           <section className="workspace-shell">
             <div className="workspace-head">
               <h2>ID Tools</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <NricTools />
           </section>
@@ -834,7 +1017,6 @@ function App() {
           <section className="workspace-shell">
             <div className="workspace-head">
               <h2>Number Lab</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <section className="country-switcher">
               <button
@@ -868,7 +1050,6 @@ function App() {
           <section className="workspace-shell">
             <div className="workspace-head">
               <h2>Java Learning</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <JavaFeaturesPage />
           </section>
@@ -878,7 +1059,6 @@ function App() {
           <section className="workspace-shell">
             <div className="workspace-head">
               <h2>AI Studio</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <section className="country-switcher ai-page-switcher" aria-label="AI Studio pages">
               <button
@@ -1072,7 +1252,6 @@ function App() {
           <section className="workspace-shell legal-shell">
             <div className="workspace-head">
               <h2>Privacy Policy</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <article className="tool-card legal-card">
               <p>
@@ -1102,7 +1281,6 @@ function App() {
           <section className="workspace-shell legal-shell">
             <div className="workspace-head">
               <h2>Terms of Use</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <article className="tool-card legal-card">
               <p>
@@ -1122,7 +1300,6 @@ function App() {
           <section className="workspace-shell legal-shell">
             <div className="workspace-head">
               <h2>Disclaimer</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <article className="tool-card legal-card">
               <p>
@@ -1142,7 +1319,6 @@ function App() {
           <section className="workspace-shell legal-shell">
             <div className="workspace-head">
               <h2>Contact</h2>
-              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
             </div>
             <article className="tool-card legal-card">
               <p>For feedback, improvements, or collaboration inquiries:</p>
