@@ -635,6 +635,9 @@ function App() {
             <button className={mode === "workbook" ? "is-active" : ""} onClick={() => setMode("workbook")} type="button">
               Dev Notes
             </button>
+            <button className={mode === "ai" ? "is-active" : ""} onClick={() => setMode("ai")} type="button">
+              <span className="ai-icon" aria-hidden="true">🤖</span> AI
+            </button>
             <button className={mode === "id-tools" ? "is-active" : ""} onClick={() => setMode("id-tools")} type="button">
               ID Tools
             </button>
@@ -643,9 +646,6 @@ function App() {
             </button>
             <button className={mode === "java" ? "is-active" : ""} onClick={() => setMode("java")} type="button">
               <span className="java-icon" aria-hidden="true">☕</span> Java
-            </button>
-            <button className={mode === "ai" ? "is-active" : ""} onClick={() => setMode("ai")} type="button">
-              <span className="ai-icon" aria-hidden="true">🤖</span> AI
             </button>
           </nav>
           <div className="ca-header-actions">
