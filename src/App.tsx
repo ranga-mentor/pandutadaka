@@ -27,6 +27,7 @@ function buildRoute(
   mode: Mode,
   numbersMode: "4d" | "toto",
   idCountryMode: "sg" | "my" | "hk",
+  javaPage: "core" | "junit" | "spring-boot" | "releases",
   aiStudioPage: "visuals" | "heartfulness",
   trackIndex: number,
   lessonIndex: number,
@@ -49,6 +50,9 @@ function buildRoute(
   }
   if (mode === "ai") {
     return aiStudioPage === "heartfulness" ? "/ai-studio/tools" : "/ai-studio/visuals";
+  }
+  if (mode === "java") {
+    return `/java/${javaPage}`;
   }
   return seoByMode[mode].path;
 }
@@ -84,8 +88,17 @@ function parseRoute(pathname: string, search: string): ParsedRoute {
   if (pathname === "/number-lab/4d" || pathname === "/number-lab") {
     return { mode: "numbers", numbersMode: "4d" };
   }
-  if (pathname === "/java") {
-    return { mode: "java" };
+  if (pathname === "/java/releases") {
+    return { mode: "java", javaPage: "releases" };
+  }
+  if (pathname === "/java/spring-boot") {
+    return { mode: "java", javaPage: "spring-boot" };
+  }
+  if (pathname === "/java/junit") {
+    return { mode: "java", javaPage: "junit" };
+  }
+  if (pathname === "/java/core" || pathname === "/java") {
+    return { mode: "java", javaPage: "core" };
   }
   if (pathname === "/ai-studio/tools") {
     return { mode: "ai", aiStudioPage: "heartfulness" };
@@ -115,6 +128,7 @@ function getSeoMeta(
   mode: Mode,
   numbersMode: "4d" | "toto",
   idCountryMode: "sg" | "my" | "hk",
+  javaPage: "core" | "junit" | "spring-boot" | "releases",
   aiStudioPage: "visuals" | "heartfulness",
   activeTrackTitle: string,
   activeLessonTitle: string,
@@ -149,6 +163,30 @@ function getSeoMeta(
       title: "Singapore Toto Predictor | Learning Lab",
       description:
         "Educational Singapore Toto analyzer with history-based generated sets and weighted number insights.",
+    };
+  }
+  if (mode === "java" && javaPage === "core") {
+    return {
+      title: "Core Java Essentials | Learning Lab",
+      description: "Core Java fundamentals and daily coding essentials for practical development.",
+    };
+  }
+  if (mode === "java" && javaPage === "junit") {
+    return {
+      title: "JUnit 5 Guide | Learning Lab",
+      description: "JUnit 5 basics, assertions, lifecycle annotations, and practical testing workflow.",
+    };
+  }
+  if (mode === "java" && javaPage === "spring-boot") {
+    return {
+      title: "Spring Boot Guide | Learning Lab",
+      description: "Spring Boot essentials for REST APIs, configuration, data access, testing, and deployment.",
+    };
+  }
+  if (mode === "java" && javaPage === "releases") {
+    return {
+      title: "Java Features | Learning Lab",
+      description: "Release-wise Java feature highlights from Java 11 through Java 25.",
     };
   }
   if (mode === "ai" && aiStudioPage === "heartfulness") {
@@ -188,6 +226,7 @@ function App() {
   const [mode, setMode] = useState<Mode>("home");
   const [numbersMode, setNumbersMode] = useState<"4d" | "toto">("4d");
   const [idCountryMode, setIdCountryMode] = useState<"sg" | "my" | "hk">("sg");
+  const [javaPage, setJavaPage] = useState<"core" | "junit" | "spring-boot" | "releases">("core");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
@@ -294,9 +333,41 @@ function App() {
       {
         id: "java",
         label: "Java Feature Explorer",
-        hint: "Java 11 to Java 21",
+        hint: "Core Java, features, JUnit, Spring Boot",
         mode: "java",
         keywords: ["java", "jdk", "features"],
+      },
+      {
+        id: "java-core",
+        label: "Core Java",
+        hint: "Java fundamentals and daily coding essentials",
+        mode: "java",
+        javaPage: "core",
+        keywords: ["core java", "oop", "collections", "streams"],
+      },
+      {
+        id: "java-junit",
+        label: "JUnit 5",
+        hint: "Unit testing guide for Java",
+        mode: "java",
+        javaPage: "junit",
+        keywords: ["junit", "unit tests", "assertions", "testing"],
+      },
+      {
+        id: "java-spring-boot",
+        label: "Spring Boot",
+        hint: "Build Java backend services quickly",
+        mode: "java",
+        javaPage: "spring-boot",
+        keywords: ["spring boot", "rest api", "spring data", "actuator"],
+      },
+      {
+        id: "java-releases",
+        label: "Java Features",
+        hint: "Java 11 to 25 highlights",
+        mode: "java",
+        javaPage: "releases",
+        keywords: ["java 11", "java 17", "java 21", "java 25", "release notes"],
       },
       {
         id: "ai",
@@ -417,6 +488,9 @@ function App() {
       if (parsed.idCountryMode) {
         setIdCountryMode(parsed.idCountryMode);
       }
+      if (parsed.javaPage) {
+        setJavaPage(parsed.javaPage);
+      }
       if (parsed.aiStudioPage) {
         setAiStudioPage(parsed.aiStudioPage);
       }
@@ -444,12 +518,12 @@ function App() {
       skipHistoryPushRef.current = false;
       return;
     }
-    const nextRoute = buildRoute(mode, numbersMode, idCountryMode, aiStudioPage, trackIndex, lessonIndex);
+    const nextRoute = buildRoute(mode, numbersMode, idCountryMode, javaPage, aiStudioPage, trackIndex, lessonIndex);
     const currentRoute = `${window.location.pathname}${window.location.search}`;
     if (nextRoute !== currentRoute) {
       window.history.pushState({}, "", nextRoute);
     }
-  }, [mode, numbersMode, idCountryMode, aiStudioPage, trackIndex, lessonIndex]);
+  }, [mode, numbersMode, idCountryMode, javaPage, aiStudioPage, trackIndex, lessonIndex]);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", themeMode);
@@ -457,12 +531,13 @@ function App() {
   }, [themeMode]);
 
   useEffect(() => {
-    const routePath = buildRoute(mode, numbersMode, idCountryMode, aiStudioPage, trackIndex, lessonIndex);
+    const routePath = buildRoute(mode, numbersMode, idCountryMode, javaPage, aiStudioPage, trackIndex, lessonIndex);
     const canonical = `${SEO_BASE_URL}${routePath}`;
     const seo = getSeoMeta(
       mode,
       numbersMode,
       idCountryMode,
+      javaPage,
       aiStudioPage,
       activeTrack.title,
       activeLesson.lesson.title,
@@ -522,7 +597,7 @@ function App() {
         name: "Learning Lab",
       },
     });
-  }, [mode, numbersMode, idCountryMode, aiStudioPage, trackIndex, lessonIndex, activeTrack.title, activeLesson.lesson.title]);
+  }, [mode, numbersMode, idCountryMode, javaPage, aiStudioPage, trackIndex, lessonIndex, activeTrack.title, activeLesson.lesson.title]);
 
   useEffect(() => {
     if (mode !== "workbook" || !activeLesson) {
@@ -558,6 +633,9 @@ function App() {
     }
     if (item.mode === "id-tools" && item.idCountryMode) {
       setIdCountryMode(item.idCountryMode);
+    }
+    if (item.mode === "java" && item.javaPage) {
+      setJavaPage(item.javaPage);
     }
     if (item.mode === "workbook") {
       if (typeof item.trackIndex === "number") {
@@ -776,6 +854,9 @@ function App() {
               <span aria-hidden="true" className="theme-toggle-icon moon">☾</span>
             </IconButton>
           </div>
+          <p className="ca-header-note">
+            This site is a personal learning notebook, curated to organize and revisit practical concepts.
+          </p>
         </header>
 
         {mode === "home" && <HomeSection cards={featureCards} onOpenMode={setMode} />}
@@ -843,7 +924,7 @@ function App() {
             <div className="workspace-head">
               <h2>Java Learning</h2>
             </div>
-            <JavaFeaturesPage />
+            <JavaFeaturesPage javaPage={javaPage} onJavaPageChange={setJavaPage} />
           </section>
         )}
 

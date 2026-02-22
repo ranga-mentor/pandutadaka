@@ -85,6 +85,42 @@ export default function WorkbookSection({
           <p className="chapter-intro">{activeLesson.lesson.objective}</p>
 
           {activeLesson.lesson.id === "zones" && gitVisual}
+          {activeLesson.lesson.id === "containers-not-vm" && (
+            <section aria-label="Container visuals">
+              <figure className="zone-figure git-poster-figure">
+                <img
+                  src="/containers-image-vs-container.png"
+                  alt="Image versus container blueprint and running instance"
+                  width={1366}
+                  height={768}
+                  loading="lazy"
+                  onError={(event) => {
+                    const figure = event.currentTarget.closest("figure");
+                    if (figure) {
+                      figure.setAttribute("hidden", "true");
+                    }
+                  }}
+                />
+                <figcaption>Image vs Container: Blueprint and Build</figcaption>
+              </figure>
+              <figure className="zone-figure git-poster-figure">
+                <img
+                  src="/containers-docker-to-pods.png"
+                  alt="From Docker to Pods with Kubernetes and OpenShift"
+                  width={1366}
+                  height={768}
+                  loading="lazy"
+                  onError={(event) => {
+                    const figure = event.currentTarget.closest("figure");
+                    if (figure) {
+                      figure.setAttribute("hidden", "true");
+                    }
+                  }}
+                />
+                <figcaption>Docker to Pods: Sequential Journey</figcaption>
+              </figure>
+            </section>
+          )}
 
           <section className="bite-grid">
             {activeLesson.lesson.bites.map((bite) => (
