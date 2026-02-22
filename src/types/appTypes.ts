@@ -8,7 +8,8 @@ export type Mode =
   | "privacy"
   | "terms"
   | "disclaimer"
-  | "contact";
+  | "contact"
+  | "sitemap";
 
 export type FeatureCard = {
   title: string;

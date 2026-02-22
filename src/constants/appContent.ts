@@ -122,4 +122,9 @@ export const seoByMode: Record<Mode, SeoMeta> = {
     description: "Contact Learning Lab for feedback, collaboration, and support.",
     path: "/contact",
   },
+  sitemap: {
+    title: "Site Map | Learning Lab",
+    description: "Browse all key Learning Lab pages and direct links in one place.",
+    path: "/sitemap",
+  },
 };

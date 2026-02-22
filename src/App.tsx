@@ -4,6 +4,7 @@ import { trackEvent } from "./analytics";
 import AiHeartfulnessToolsPage from "./components/AiHeartfulnessToolsPage";
 import HomeSection from "./components/sections/HomeSection";
 import LegalSection from "./components/sections/LegalSection";
+import SiteMapSection from "./components/sections/SiteMapSection";
 import WorkbookSection from "./components/sections/WorkbookSection";
 import JavaFeaturesPage from "./components/JavaFeaturesPage";
 import NricTools from "./components/NricTools";
@@ -93,6 +94,9 @@ function parseRoute(pathname: string, search: string): ParsedRoute {
   }
   if (pathname === "/contact") {
     return { mode: "contact" };
+  }
+  if (pathname === "/sitemap") {
+    return { mode: "sitemap" };
   }
   return { mode: "home" };
 }
@@ -274,6 +278,13 @@ function App() {
         hint: "Reach out for support",
         mode: "contact",
         keywords: ["contact", "support", "feedback"],
+      },
+      {
+        id: "sitemap",
+        label: "Site Map",
+        hint: "All major page links",
+        mode: "sitemap",
+        keywords: ["sitemap", "site map", "pages", "links"],
       },
     ];
 
@@ -972,6 +983,8 @@ function App() {
           <LegalSection mode={mode} />
         )}
 
+        {mode === "sitemap" && <SiteMapSection />}
+
         <footer className="ca-footer" aria-label="Footer links">
           <p>© {new Date().getFullYear()} Learning Lab</p>
           <div className="ca-footer-links">
@@ -979,6 +992,7 @@ function App() {
             <button type="button" onClick={() => setMode("terms")}>Terms of Use</button>
             <button type="button" onClick={() => setMode("disclaimer")}>Disclaimer</button>
             <button type="button" onClick={() => setMode("contact")}>Contact</button>
+            <button type="button" onClick={() => setMode("sitemap")}>Site Map</button>
           </div>
         </footer>
       </main>
