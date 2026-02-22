@@ -2,183 +2,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CssBaseline, IconButton, ThemeProvider, createTheme } from "@mui/material";
 import { trackEvent } from "./analytics";
 import AiHeartfulnessToolsPage from "./components/AiHeartfulnessToolsPage";
+import HomeSection from "./components/sections/HomeSection";
+import LegalSection from "./components/sections/LegalSection";
+import WorkbookSection from "./components/sections/WorkbookSection";
 import JavaFeaturesPage from "./components/JavaFeaturesPage";
 import NricTools from "./components/NricTools";
 import SingaporeTotoPage from "./components/SingaporeTotoPage";
 import TotoPredictor from "./components/TotoPredictor";
+import { aiPosterSlides, featureCards, seoByMode } from "./constants/appContent";
 import { learningTracks } from "./data/learningContent";
+import type { Mode, ParsedRoute, SearchResult, SeoMeta } from "./types/appTypes";
 import "./App.css";
 
-type Mode =
-  | "home"
-  | "workbook"
-  | "id-tools"
-  | "numbers"
-  | "java"
-  | "ai"
-  | "privacy"
-  | "terms"
-  | "disclaimer"
-  | "contact";
-
-type FeatureCard = {
-  title: string;
-  description: string;
-  action: string;
-  mode: Mode;
-  image: string;
-};
-
-type SearchResult = {
-  id: string;
-  label: string;
-  hint: string;
-  mode: Mode;
-  numbersMode?: "4d" | "toto";
-  trackIndex?: number;
-  lessonIndex?: number;
-  keywords?: string[];
-};
-
-type SeoMeta = {
-  title: string;
-  description: string;
-  path: string;
-};
-
-type ParsedRoute = {
-  mode: Mode;
-  numbersMode?: "4d" | "toto";
-  aiStudioPage?: "visuals" | "heartfulness";
-  trackIndex?: number;
-  lessonIndex?: number;
-};
-
-const featureCards: FeatureCard[] = [
-  {
-    title: "Dev Notes",
-    description: "Practical day-to-day engineering notes with guided steps and quick checks.",
-    action: "Open Dev Notes",
-    mode: "workbook",
-    image: "/workbook-tracks.jpg",
-  },
-  {
-    title: "ID Tools Studio",
-    description: "Validate and generate Singapore, Malaysia, and Hong Kong IDs in one place.",
-    action: "Open ID Tools",
-    mode: "id-tools",
-    image: "/id-tools-neon-theme.svg",
-  },
-  {
-    title: "🇸🇬 4D & Toto Lab",
-    description: "Use probability-driven predictors for Singapore 4D and Toto as one toolkit.",
-    action: "Open Number Lab",
-    mode: "numbers",
-    image: "/number-lab-lottery.svg",
-  },
-  {
-    title: "Java Feature Explorer",
-    description: "Review practical updates from Java 11 through Java 21 in a single release map.",
-    action: "Open Java",
-    mode: "java",
-    image: "/java-feature-explorer.jpg",
-  },
-  {
-    title: "AI Tools & Studio",
-    description: "Hands-on AI playbook with visual explainers, useful tools, and practical use cases.",
-    action: "Open AI Studio",
-    mode: "ai",
-    image: "/ai-studio.jpg",
-  },
-];
-
-const aiPosterSlides = [
-  {
-    src: "/AIinnutshell.jpg",
-    alt: "What is AI quick visual guide with simple definition, examples, business use, and AI versus ML",
-    caption: "AI basics poster: sense, think, act, examples, and AI vs ML.",
-  },
-  {
-    src: "/MLHF.jpg",
-    alt: "What is ML visual guide explaining machine learning basics, workflow, real-life examples, and learning types",
-    caption: "ML basics poster: how ML works, real-life usage, and learning types.",
-  },
-  {
-    src: "/GenAI.jpg",
-    alt: "What is Generative AI visual guide covering what it is, how it works, capabilities, and practical examples",
-    caption: "Generative AI poster: concept, workflow, and what GenAI can create.",
-  },
-  {
-    src: "/LLM.jpg",
-    alt: "What are LLMs visual guide covering what large language models are, how they work, uses, and examples",
-    caption: "LLM poster: what LLMs are, how they work, and common use cases.",
-  },
-  {
-    src: "/RAG.jpg",
-    alt: "What is RAG visual guide explaining retrieval-augmented generation and how search plus generation improves answers",
-    caption: "RAG poster: retrieval + generation workflow for more reliable AI answers.",
-  },
-];
-
 const SEO_BASE_URL = "https://pandutadaka.com";
-
-const seoByMode: Record<Mode, SeoMeta> = {
-  home: {
-    title: "Learning Lab | AI, Java, ID Tools, and Number Lab",
-    description:
-      "Learning Lab with AI Studio, Java feature explorer, ID tools, and Singapore number lab for 4D and Toto learning workflows.",
-    path: "/",
-  },
-  workbook: {
-    title: "Dev Notes | Learning Lab",
-    description: "Structured workbook tracks and guided lessons with practice and quick checks.",
-    path: "/dev-notes",
-  },
-  "id-tools": {
-    title: "ID Tools Studio | Learning Lab",
-    description:
-      "Validate and generate Singapore NRIC/FIN, Malaysia MyKad, and Hong Kong HKID formats.",
-    path: "/id-tools",
-  },
-  numbers: {
-    title: "Number Lab | Learning Lab",
-    description:
-      "Explore Singapore 4D and Toto analysis tools with historical, probability-based educational views.",
-    path: "/number-lab",
-  },
-  java: {
-    title: "Java Learning | Learning Lab",
-    description: "Java 11 to Java 21 feature explorer with practical release-by-release highlights.",
-    path: "/java",
-  },
-  ai: {
-    title: "AI Studio | Learning Lab",
-    description:
-      "AI Studio with flipbook guides, prompt workflows, and practical AI tool usage patterns.",
-    path: "/ai-studio",
-  },
-  privacy: {
-    title: "Privacy Policy | Learning Lab",
-    description: "Privacy practices, analytics usage, and data handling policy for Learning Lab.",
-    path: "/privacy-policy",
-  },
-  terms: {
-    title: "Terms of Use | Learning Lab",
-    description: "Terms governing usage of Learning Lab educational content and tools.",
-    path: "/terms-of-use",
-  },
-  disclaimer: {
-    title: "Disclaimer | Learning Lab",
-    description:
-      "Educational disclaimer for AI, Java, ID, and number-analysis content and tools on Learning Lab.",
-    path: "/disclaimer",
-  },
-  contact: {
-    title: "Contact | Learning Lab",
-    description: "Contact Learning Lab for feedback, collaboration, and support.",
-    path: "/contact",
-  },
-};
 
 function getTrackLessons(trackIdx: number) {
   return learningTracks[trackIdx].modules.flatMap((module) =>
@@ -863,145 +699,22 @@ function App() {
           </div>
         </header>
 
-        {mode === "home" && (
-          <>
-            <section className="ca-section">
-              <div className="ca-section-head">
-                <h2>Featured Learning Blocks</h2>
-              </div>
-              <div className="ca-card-grid">
-                {featureCards.map((card) => (
-                  <article
-                    key={card.title}
-                    className={[
-                      "ca-card",
-                      card.mode === "java" ? "is-java" : "",
-                      card.mode === "ai" ? "is-ai" : "",
-                    ].filter(Boolean).join(" ")}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => setMode(card.mode)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        setMode(card.mode);
-                      }
-                    }}
-                    aria-label={`Open ${card.title}`}
-                  >
-                    <img src={card.image} alt={card.title} />
-                    <div className="ca-card-body">
-                      <h3>
-                        {card.mode === "java" && <span className="java-icon" aria-hidden="true">☕</span>}
-                        {card.mode === "ai" && <span className="ai-icon" aria-hidden="true">🤖</span>}
-                        {card.title}
-                      </h3>
-                      <p className="ca-card-meta">{card.description}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          </>
-        )}
+        {mode === "home" && <HomeSection cards={featureCards} onOpenMode={setMode} />}
 
         {mode === "workbook" && (
-          <section className="workspace-shell">
-            <div className="workspace-head">
-              <h2>{activeTrack.title}</h2>
-            </div>
-            <section className="track-switcher">
-              {learningTracks.map((track, index) => (
-                <button
-                  key={track.id}
-                  className={index === trackIndex ? "is-active" : ""}
-                  onClick={() => {
-                    setTrackIndex(index);
-                    setLessonIndex(0);
-                  }}
-                  type="button"
-                >
-                  {track.title}
-                </button>
-              ))}
-            </section>
-            <div className="layout">
-              <aside className="sidebar">
-                <h2>{activeTrack.title}</h2>
-                <p>{activeTrack.subtitle}</p>
-                <small>{activeTrack.sourceLabel}</small>
-                <nav aria-label="Lesson navigation">
-                  <ol>
-                    {flatLessons.map((entry, index) => (
-                      <li key={entry.lesson.id}>
-                        <button
-                          className={index === lessonIndex ? "is-current" : ""}
-                          onClick={() => setLessonIndex(index)}
-                          type="button"
-                        >
-                          {index + 1}. {entry.lesson.title}
-                        </button>
-                      </li>
-                    ))}
-                  </ol>
-                </nav>
-              </aside>
-
-              <article className="content">
-                <h2 className="chapter-title">Chapter {lessonIndex + 1} - {activeLesson.lesson.title}</h2>
-                <p className="chapter-intro">{activeLesson.lesson.objective}</p>
-
-                {activeLesson.lesson.id === "zones" && <GitZonesDiagram />}
-
-                <section className="bite-grid">
-                  {activeLesson.lesson.bites.map((bite) => (
-                    <div key={bite.title} className="bite-card">
-                      <h3>{bite.title}</h3>
-                      <p>{bite.text}</p>
-                    </div>
-                  ))}
-                </section>
-
-                {activeLesson.lesson.practice && (
-                  <section className="practice">
-                    <h3>Try Now</h3>
-                    <pre>
-                      {activeLesson.lesson.practice.map((line) => `${line}\n`).join("")}
-                    </pre>
-                  </section>
-                )}
-
-                {activeLesson.lesson.check && (
-                  <section className="brain-note">
-                    <h3>Brain note</h3>
-                    <p>{activeLesson.lesson.check}</p>
-                  </section>
-                )}
-
-                <div className="lesson-controls">
-                  <button
-                    disabled={lessonIndex === 0}
-                    onClick={() => setLessonIndex((index) => Math.max(index - 1, 0))}
-                    type="button"
-                  >
-                    Previous
-                  </button>
-                  <button onClick={() => setLessonIndex(0)} type="button">
-                    Restart Track
-                  </button>
-                  <button
-                    disabled={lessonIndex === flatLessons.length - 1}
-                    onClick={() =>
-                      setLessonIndex((index) => Math.min(index + 1, flatLessons.length - 1))
-                    }
-                    type="button"
-                  >
-                    Next
-                  </button>
-                </div>
-              </article>
-            </div>
-          </section>
+          <WorkbookSection
+            tracks={learningTracks}
+            activeTrack={activeTrack}
+            flatLessons={flatLessons}
+            lessonIndex={lessonIndex}
+            activeLesson={activeLesson}
+            onTrackChange={(index) => {
+              setTrackIndex(index);
+              setLessonIndex(0);
+            }}
+            onLessonChange={setLessonIndex}
+            gitVisual={<GitZonesDiagram />}
+          />
         )}
 
         {mode === "id-tools" && (
@@ -1248,88 +961,8 @@ function App() {
           </section>
         )}
 
-        {mode === "privacy" && (
-          <section className="workspace-shell legal-shell">
-            <div className="workspace-head">
-              <h2>Privacy Policy</h2>
-            </div>
-            <article className="tool-card legal-card">
-              <p>
-                Learning Lab uses analytics to understand page views and improve content quality.
-                We do not intentionally collect sensitive personal data through tools on this site.
-              </p>
-              <h3>What we collect</h3>
-              <ul>
-                <li>Basic usage events such as page visits and feature interactions.</li>
-                <li>Technical metadata like browser type and approximate location.</li>
-              </ul>
-              <h3>How data is used</h3>
-              <ul>
-                <li>Improve learning content and user experience.</li>
-                <li>Measure performance of learning pages and tools.</li>
-              </ul>
-              <h3>Third-party services</h3>
-              <p>
-                Google Analytics may set cookies according to Google policies. You can control cookies
-                in your browser settings.
-              </p>
-            </article>
-          </section>
-        )}
-
-        {mode === "terms" && (
-          <section className="workspace-shell legal-shell">
-            <div className="workspace-head">
-              <h2>Terms of Use</h2>
-            </div>
-            <article className="tool-card legal-card">
-              <p>
-                Learning Lab content and tools are provided for educational and informational use.
-                By using this site, you agree to use features lawfully and responsibly.
-              </p>
-              <ul>
-                <li>Do not misuse tools for fraud, deception, or unlawful activity.</li>
-                <li>Use generated examples only in testing, demos, or learning contexts.</li>
-                <li>External links are provided as references without warranty.</li>
-              </ul>
-            </article>
-          </section>
-        )}
-
-        {mode === "disclaimer" && (
-          <section className="workspace-shell legal-shell">
-            <div className="workspace-head">
-              <h2>Disclaimer</h2>
-            </div>
-            <article className="tool-card legal-card">
-              <p>
-                Content across AI Studio, Java Learning, ID Tools, and Number Lab does not constitute
-                legal, financial, medical, or regulatory advice.
-              </p>
-              <ul>
-                <li>Verify critical information with authoritative primary sources.</li>
-                <li>Lottery-related content is educational and not betting advice.</li>
-                <li>ID generators are for format demonstration only.</li>
-              </ul>
-            </article>
-          </section>
-        )}
-
-        {mode === "contact" && (
-          <section className="workspace-shell legal-shell">
-            <div className="workspace-head">
-              <h2>Contact</h2>
-            </div>
-            <article className="tool-card legal-card">
-              <p>For feedback, improvements, or collaboration inquiries:</p>
-              <p>
-                Email: <a href="mailto:hello@learninglab.dev">hello@learninglab.dev</a>
-              </p>
-              <p>
-                Include the page/tool name and steps to reproduce if reporting a bug.
-              </p>
-            </article>
-          </section>
+        {(mode === "privacy" || mode === "terms" || mode === "disclaimer" || mode === "contact") && (
+          <LegalSection mode={mode} />
         )}
 
         <footer className="ca-footer" aria-label="Footer links">

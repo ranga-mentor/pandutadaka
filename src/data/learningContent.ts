@@ -155,26 +155,45 @@ export const learningTracks: LearningTrack[] = [
           },
           {
             id: "merge-conflicts",
-            title: "Merge Conflicts (Do Not Panic)",
+            title: "Fast Explainers + Cheat Sheet (Merge Conflicts)",
             time: "6 min",
-            objective: "Resolve conflicts using a calm, repeatable process.",
+            objective: "Understand exactly what each conflict term means and follow one quick, repeatable conflict-resolution flow.",
             bites: [
               {
-                title: "Conflict meaning",
-                text: "A conflict means Git needs your decision when two edits overlap.",
+                title: "What is a merge conflict?",
+                text: "Git cannot auto-merge because two branches changed the same lines (or related nearby lines) differently.",
               },
               {
-                title: "Resolution flow",
-                text: "Pull, inspect markers, edit final truth, stage resolved files, commit.",
+                title: "What are conflict markers?",
+                text: "<<<<<<<, =======, >>>>>>> show your version vs incoming version. Remove markers after choosing final code.",
+              },
+              {
+                title: "What is HEAD in conflict view?",
+                text: "HEAD usually means your current branch version. The other block is the version from the branch being merged/rebased.",
+              },
+              {
+                title: "Fast resolution flow (cheat sheet)",
+                text: "1) git status 2) open conflicted files 3) keep/edit final code 4) remove markers 5) git add <file> 6) git commit.",
+              },
+              {
+                title: "When to abort",
+                text: "If merge went wrong: git merge --abort. If rebase conflict is messy: git rebase --abort and restart clean.",
+              },
+              {
+                title: "Golden rule",
+                text: "Resolve logically first, then test quickly before commit. Never commit unresolved markers.",
               },
             ],
             practice: [
-              "git pull",
               "git status",
+              "git merge feature/login",
+              "git diff",
               "git add <fixed_files>",
               "git commit",
+              "git merge --abort",
+              "git rebase --abort",
             ],
-            check: "After resolving, did you run a quick behavior check before commit?",
+            check: "Can you explain markers, choose final code confidently, and finish conflict resolution without panic?",
           },
         ],
       },

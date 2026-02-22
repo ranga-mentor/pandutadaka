@@ -1,0 +1,50 @@
+export type Mode =
+  | "home"
+  | "workbook"
+  | "id-tools"
+  | "numbers"
+  | "java"
+  | "ai"
+  | "privacy"
+  | "terms"
+  | "disclaimer"
+  | "contact";
+
+export type FeatureCard = {
+  title: string;
+  description: string;
+  action: string;
+  mode: Mode;
+  image: string;
+};
+
+export type AiPosterSlide = {
+  src: string;
+  alt: string;
+  caption: string;
+};
+
+export type SearchResult = {
+  id: string;
+  label: string;
+  hint: string;
+  mode: Mode;
+  numbersMode?: "4d" | "toto";
+  trackIndex?: number;
+  lessonIndex?: number;
+  keywords?: string[];
+};
+
+export type SeoMeta = {
+  title: string;
+  description: string;
+  path: string;
+};
+
+export type ParsedRoute = {
+  mode: Mode;
+  numbersMode?: "4d" | "toto";
+  aiStudioPage?: "visuals" | "heartfulness";
+  trackIndex?: number;
+  lessonIndex?: number;
+};
