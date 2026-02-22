@@ -180,73 +180,49 @@ export const learningTracks: LearningTrack[] = [
       },
       {
         id: "git-pega-map",
-        title: "Module 2: Git and Pega Mapping",
-        summary: "Translate Git concepts to Pega branching, merge, and release work.",
+        title: "Module 2: Git Daily Mastery",
+        summary: "Operational Git habits for daily development, collaboration, and safe recovery.",
         lessons: [
           {
             id: "ten-commands",
-            title: "10 Commands to Memorize (With Meaning)",
+            title: "Daily Git Flow (Simple and Practical)",
             time: "9 min",
-            objective: "Memorize high-value commands and understand what each really does.",
+            objective: "Follow one simple Git routine every day so your commits stay clean and collaboration stays easy.",
             bites: [
               {
-                title: "Command memory set",
-                text: "status, add -p, commit, log graph, switch -c, pull --rebase, push -u, merge, revert, restore --staged.",
+                title: "Before you start coding",
+                text: "Run git status first, then git pull --rebase origin main to start from the latest code.",
               },
               {
-                title: "Focus point",
-                text: "Do not memorize syntax only; memorize operational meaning and safety level.",
+                title: "Create your feature branch",
+                text: "Use git switch -c feature/<short-name> so your work stays isolated and easy to review.",
+              },
+              {
+                title: "Commit cleanly",
+                text: "Use git add -p to stage only related changes, then write one clear commit message.",
+              },
+              {
+                title: "Push with confidence",
+                text: "Check git diff --staged and git log --oneline --graph before pushing to avoid surprises.",
+              },
+              {
+                title: "If something goes wrong",
+                text: "Use git restore for local undo and git revert for shared history. Prefer safe undo over force fixes.",
               },
             ],
             practice: [
+              "git status",
+              "git pull --rebase origin main",
               "git log --oneline --graph --decorate --all",
-              "git switch -c feature/x",
+              "git switch -c feature/update-login-copy",
+              "git add -p",
+              "git commit -m \"feat: improve login helper text\"",
+              "git diff --staged",
+              "git push -u origin feature/update-login-copy",
               "git revert <sha>",
               "git restore --staged <file>",
             ],
-            check: "Can you explain each command in one short sentence from memory?",
-          },
-          {
-            id: "mapping",
-            title: "Git to Pega Mapping",
-            time: "10 min",
-            objective: "Map file-based Git operations to rule-based Pega operations.",
-            bites: [
-              {
-                title: "Closest mapping",
-                text: "Repo->app rules, Commit->check-in, Branch->branch ruleset, Merge->branch merge, Tag/Release->product/deployment.",
-              },
-              {
-                title: "Key difference",
-                text: "Git merges text lines; Pega merges rule metadata and rule selections.",
-              },
-            ],
-            practice: [
-              "Map one recent Git workflow from your team to equivalent Pega steps.",
-              "List where conflict resolution decisions differ between Git and Pega.",
-            ],
-            check: "Can you clearly explain line merge vs rule merge to a teammate?",
-          },
-          {
-            id: "practical-scenarios",
-            title: "Practical Scenarios (Git vs Pega)",
-            time: "8 min",
-            objective: "Apply concept mapping to real scenarios: same change, hotfix, release.",
-            bites: [
-              {
-                title: "Scenario A",
-                text: "Same file/rule changed by two people: resolve line conflict in Git; choose/reconcile rule in Pega.",
-              },
-              {
-                title: "Scenario B and C",
-                text: "Hotfix branch then merge in Git; patch/branch merge forward in Pega. Tag + pipeline in Git; product rule + deployment pipeline in Pega.",
-              },
-            ],
-            practice: [
-              "Write your team's hotfix flow in Git steps and Pega steps side-by-side.",
-              "Write one release checklist with both Git and Pega terms.",
-            ],
-            check: "Can you defend when to use Git actions versus Pega-native actions?",
+            check: "Can you complete this full flow from status to push and explain why each step is used?",
           },
         ],
       },
@@ -255,8 +231,8 @@ export const learningTracks: LearningTrack[] = [
   {
     id: "containers-orchestration",
     title: "Containers & Orchestration",
-    subtitle: "Workbook built from the attached Containers PDF.",
-    sourceLabel: "Source: HeadFirst_Containers_With_Diagrams (1).pdf",
+    subtitle: "",
+    sourceLabel: "",
     modules: [
       {
         id: "containers-core",

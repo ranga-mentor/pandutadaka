@@ -56,9 +56,9 @@ type ParsedRoute = {
 
 const featureCards: FeatureCard[] = [
   {
-    title: "Workbook Tracks",
-    description: "Structured chapters with practice and quick checks for guided learning.",
-    action: "Open Workbook",
+    title: "Dev Notes",
+    description: "Practical day-to-day engineering notes with guided steps and quick checks.",
+    action: "Open Dev Notes",
     mode: "workbook",
     image: "/workbook-tracks.jpg",
   },
@@ -84,9 +84,9 @@ const featureCards: FeatureCard[] = [
     image: "/java-feature-explorer.jpg",
   },
   {
-    title: "AI Studio",
-    description: "Learn prompt design, model workflows, and practical AI usage patterns.",
-    action: "Open AI",
+    title: "AI Tools & Studio",
+    description: "Hands-on AI playbook with visual explainers, useful tools, and practical use cases.",
+    action: "Open AI Studio",
     mode: "ai",
     image: "/ai-studio.jpg",
   },
@@ -120,7 +120,7 @@ const aiPosterSlides = [
   },
 ];
 
-const SEO_BASE_URL = "https://learninglab.example.com";
+const SEO_BASE_URL = "https://pandutadaka.com";
 
 const seoByMode: Record<Mode, SeoMeta> = {
   home: {
