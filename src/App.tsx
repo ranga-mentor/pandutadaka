@@ -86,27 +86,27 @@ const featureCards: FeatureCard[] = [
 
 const aiPosterSlides = [
   {
-    src: "/AIinnutshell.png",
+    src: "/AIinnutshell.jpg",
     alt: "What is AI quick visual guide with simple definition, examples, business use, and AI versus ML",
     caption: "AI basics poster: sense, think, act, examples, and AI vs ML.",
   },
   {
-    src: "/MLHF.png",
+    src: "/MLHF.jpg",
     alt: "What is ML visual guide explaining machine learning basics, workflow, real-life examples, and learning types",
     caption: "ML basics poster: how ML works, real-life usage, and learning types.",
   },
   {
-    src: "/GenAI.png",
+    src: "/GenAI.jpg",
     alt: "What is Generative AI visual guide covering what it is, how it works, capabilities, and practical examples",
     caption: "Generative AI poster: concept, workflow, and what GenAI can create.",
   },
   {
-    src: "/LLM.png",
+    src: "/LLM.jpg",
     alt: "What are LLMs visual guide covering what large language models are, how they work, uses, and examples",
     caption: "LLM poster: what LLMs are, how they work, and common use cases.",
   },
   {
-    src: "/RAG.png",
+    src: "/RAG.jpg",
     alt: "What is RAG visual guide explaining retrieval-augmented generation and how search plus generation improves answers",
     caption: "RAG poster: retrieval + generation workflow for more reliable AI answers.",
   },
