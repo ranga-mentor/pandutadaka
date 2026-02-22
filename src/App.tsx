@@ -227,6 +227,13 @@ function App() {
         keywords: ["toto", "lottery", "jackpot"],
       },
       {
+        id: "singapore-lottery",
+        label: "Singapore Lottery",
+        hint: "Singapore 4D and Toto tools",
+        mode: "numbers",
+        keywords: ["singapore lottery", "4d", "toto", "number lab"],
+      },
+      {
         id: "java",
         label: "Java Feature Explorer",
         hint: "Java 11 to Java 21",
@@ -632,7 +639,7 @@ function App() {
               ID Tools
             </button>
             <button className={mode === "numbers" ? "is-active" : ""} onClick={() => setMode("numbers")} type="button">
-              <span className="sg-icon" aria-hidden="true">🇸🇬</span> Number Lab
+              <span className="sg-icon" aria-hidden="true">🇸🇬</span> Singapore Lottery
             </button>
             <button className={mode === "java" ? "is-active" : ""} onClick={() => setMode("java")} type="button">
               <span className="java-icon" aria-hidden="true">☕</span> Java
@@ -729,7 +736,7 @@ function App() {
         {mode === "numbers" && (
           <section className="workspace-shell">
             <div className="workspace-head">
-              <h2>Number Lab</h2>
+              <h2>Singapore Lottery</h2>
             </div>
             <section className="country-switcher">
               <button
@@ -752,7 +759,7 @@ function App() {
             <article className="tool-card legal-note">
               <h3>Educational Disclaimer</h3>
               <p>
-                Number Lab predictions are educational demonstrations only and do not guarantee outcomes.
+                Singapore Lottery predictions are educational demonstrations only and do not guarantee outcomes.
                 Please use responsibly and follow local regulations.
               </p>
             </article>

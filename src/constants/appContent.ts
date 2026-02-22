@@ -16,9 +16,9 @@ export const featureCards: FeatureCard[] = [
     image: "/id-tools-neon-theme.svg",
   },
   {
-    title: "🇸🇬 4D & Toto Lab",
+    title: "🇸🇬 Singapore Lottery",
     description: "Use probability-driven predictors for Singapore 4D and Toto as one toolkit.",
-    action: "Open Number Lab",
+    action: "Open Singapore Lottery",
     mode: "numbers",
     image: "/number-lab-lottery.svg",
   },
@@ -68,7 +68,7 @@ export const aiPosterSlides: AiPosterSlide[] = [
 
 export const seoByMode: Record<Mode, SeoMeta> = {
   home: {
-    title: "Learning Lab | AI, Java, ID Tools, and Number Lab",
+    title: "Learning Lab | AI, Java, ID Tools, and Singapore Lottery",
     description:
       "Learning Lab with AI Studio, Java feature explorer, ID tools, and Singapore number lab for 4D and Toto learning workflows.",
     path: "/",
@@ -85,7 +85,7 @@ export const seoByMode: Record<Mode, SeoMeta> = {
     path: "/id-tools",
   },
   numbers: {
-    title: "Number Lab | Learning Lab",
+    title: "Singapore Lottery | Learning Lab",
     description:
       "Explore Singapore 4D and Toto analysis tools with historical, probability-based educational views.",
     path: "/number-lab",

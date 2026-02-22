@@ -65,7 +65,7 @@ export default function LegalSection({ mode }: LegalSectionProps) {
         </div>
         <article className="tool-card legal-card">
           <p>
-            Content across AI Studio, Java Learning, ID Tools, and Number Lab does not constitute
+            Content across AI Studio, Java Learning, ID Tools, and Singapore Lottery does not constitute
             legal, financial, medical, or regulatory advice.
           </p>
           <ul>
