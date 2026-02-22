@@ -9,7 +9,17 @@ import TotoPredictor from "./components/TotoPredictor";
 import { learningTracks } from "./data/learningContent";
 import "./App.css";
 
-type Mode = "home" | "workbook" | "id-tools" | "numbers" | "java" | "ai";
+type Mode =
+  | "home"
+  | "workbook"
+  | "id-tools"
+  | "numbers"
+  | "java"
+  | "ai"
+  | "privacy"
+  | "terms"
+  | "disclaimer"
+  | "contact";
 
 type FeatureCard = {
   title: string;
@@ -28,6 +38,12 @@ type SearchResult = {
   trackIndex?: number;
   lessonIndex?: number;
   keywords?: string[];
+};
+
+type SeoMeta = {
+  title: string;
+  description: string;
+  path: string;
 };
 
 const featureCards: FeatureCard[] = [
@@ -95,6 +111,66 @@ const aiPosterSlides = [
     caption: "RAG poster: retrieval + generation workflow for more reliable AI answers.",
   },
 ];
+
+const SEO_BASE_URL = "https://learninglab.example.com";
+
+const seoByMode: Record<Mode, SeoMeta> = {
+  home: {
+    title: "Learning Lab | AI, Java, ID Tools, and Number Lab",
+    description:
+      "Learning Lab with AI Studio, Java feature explorer, ID tools, and Singapore number lab for 4D and Toto learning workflows.",
+    path: "/",
+  },
+  workbook: {
+    title: "Workbook | Learning Lab",
+    description: "Structured workbook tracks and guided lessons with practice and quick checks.",
+    path: "/workbook",
+  },
+  "id-tools": {
+    title: "ID Tools Studio | Learning Lab",
+    description:
+      "Validate and generate Singapore NRIC/FIN, Malaysia MyKad, and Hong Kong HKID formats.",
+    path: "/id-tools",
+  },
+  numbers: {
+    title: "Number Lab | Learning Lab",
+    description:
+      "Explore Singapore 4D and Toto analysis tools with historical, probability-based educational views.",
+    path: "/number-lab",
+  },
+  java: {
+    title: "Java Learning | Learning Lab",
+    description: "Java 11 to Java 21 feature explorer with practical release-by-release highlights.",
+    path: "/java",
+  },
+  ai: {
+    title: "AI Studio | Learning Lab",
+    description:
+      "AI Studio with flipbook guides, prompt workflows, and practical AI tool usage patterns.",
+    path: "/ai-studio",
+  },
+  privacy: {
+    title: "Privacy Policy | Learning Lab",
+    description: "Privacy practices, analytics usage, and data handling policy for Learning Lab.",
+    path: "/privacy-policy",
+  },
+  terms: {
+    title: "Terms of Use | Learning Lab",
+    description: "Terms governing usage of Learning Lab educational content and tools.",
+    path: "/terms-of-use",
+  },
+  disclaimer: {
+    title: "Disclaimer | Learning Lab",
+    description:
+      "Educational disclaimer for AI, Java, ID, and number-analysis content and tools on Learning Lab.",
+    path: "/disclaimer",
+  },
+  contact: {
+    title: "Contact | Learning Lab",
+    description: "Contact Learning Lab for feedback, collaboration, and support.",
+    path: "/contact",
+  },
+};
 
 function GitZonesDiagram() {
   return (
@@ -191,6 +267,34 @@ function App() {
         mode: "ai",
         keywords: ["ai", "prompt", "llm", "assistant", "heartfulness", "notebooklm", "perplexity", "gemini"],
       },
+      {
+        id: "privacy",
+        label: "Privacy Policy",
+        hint: "Data handling and analytics",
+        mode: "privacy",
+        keywords: ["privacy", "data", "cookie", "analytics"],
+      },
+      {
+        id: "terms",
+        label: "Terms of Use",
+        hint: "Usage terms and conditions",
+        mode: "terms",
+        keywords: ["terms", "conditions", "usage"],
+      },
+      {
+        id: "disclaimer",
+        label: "Disclaimer",
+        hint: "Educational and legal disclaimer",
+        mode: "disclaimer",
+        keywords: ["disclaimer", "legal", "educational", "responsibility"],
+      },
+      {
+        id: "contact",
+        label: "Contact",
+        hint: "Reach out for support",
+        mode: "contact",
+        keywords: ["contact", "support", "feedback"],
+      },
     ];
 
     learningTracks.forEach((track, tIndex) => {
@@ -261,6 +365,66 @@ function App() {
     document.documentElement.setAttribute("data-theme", themeMode);
     window.localStorage.setItem("theme", themeMode);
   }, [themeMode]);
+
+  useEffect(() => {
+    const seo = seoByMode[mode];
+    const canonical = `${SEO_BASE_URL}${seo.path}`;
+    document.title = seo.title;
+
+    function upsertMeta(
+      selector: string,
+      attributeName: "name" | "property",
+      attributeValue: string,
+      content: string,
+    ) {
+      let element = document.head.querySelector(selector) as HTMLMetaElement | null;
+      if (!element) {
+        element = document.createElement("meta");
+        element.setAttribute(attributeName, attributeValue);
+        document.head.appendChild(element);
+      }
+      element.content = content;
+    }
+
+    upsertMeta('meta[name="description"]', "name", "description", seo.description);
+    upsertMeta('meta[property="og:title"]', "property", "og:title", seo.title);
+    upsertMeta('meta[property="og:description"]', "property", "og:description", seo.description);
+    upsertMeta('meta[property="og:type"]', "property", "og:type", "website");
+    upsertMeta('meta[property="og:url"]', "property", "og:url", canonical);
+    upsertMeta('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
+    upsertMeta('meta[name="twitter:title"]', "name", "twitter:title", seo.title);
+    upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", seo.description);
+
+    let canonicalLink = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonicalLink) {
+      canonicalLink = document.createElement("link");
+      canonicalLink.rel = "canonical";
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = canonical;
+
+    let structuredData = document.head.querySelector(
+      'script[data-seo="learninglab"]',
+    ) as HTMLScriptElement | null;
+    if (!structuredData) {
+      structuredData = document.createElement("script");
+      structuredData.type = "application/ld+json";
+      structuredData.dataset.seo = "learninglab";
+      document.head.appendChild(structuredData);
+    }
+    structuredData.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Learning Lab",
+      url: SEO_BASE_URL,
+      description: seo.description,
+      inLanguage: "en",
+      publisher: {
+        "@type": "Organization",
+        name: "Learning Lab",
+      },
+    });
+  }, [mode]);
 
   useEffect(() => {
     if (mode !== "workbook" || !activeLesson) {
@@ -690,6 +854,13 @@ function App() {
             </section>
             {numbersMode === "4d" && <TotoPredictor />}
             {numbersMode === "toto" && <SingaporeTotoPage />}
+            <article className="tool-card legal-note">
+              <h3>Educational Disclaimer</h3>
+              <p>
+                Number Lab predictions are educational demonstrations only and do not guarantee outcomes.
+                Please use responsibly and follow local regulations.
+              </p>
+            </article>
           </section>
         )}
 
@@ -896,6 +1067,104 @@ function App() {
             )}
           </section>
         )}
+
+        {mode === "privacy" && (
+          <section className="workspace-shell legal-shell">
+            <div className="workspace-head">
+              <h2>Privacy Policy</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <article className="tool-card legal-card">
+              <p>
+                Learning Lab uses analytics to understand page views and improve content quality.
+                We do not intentionally collect sensitive personal data through tools on this site.
+              </p>
+              <h3>What we collect</h3>
+              <ul>
+                <li>Basic usage events such as page visits and feature interactions.</li>
+                <li>Technical metadata like browser type and approximate location.</li>
+              </ul>
+              <h3>How data is used</h3>
+              <ul>
+                <li>Improve learning content and user experience.</li>
+                <li>Measure performance of learning pages and tools.</li>
+              </ul>
+              <h3>Third-party services</h3>
+              <p>
+                Google Analytics may set cookies according to Google policies. You can control cookies
+                in your browser settings.
+              </p>
+            </article>
+          </section>
+        )}
+
+        {mode === "terms" && (
+          <section className="workspace-shell legal-shell">
+            <div className="workspace-head">
+              <h2>Terms of Use</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <article className="tool-card legal-card">
+              <p>
+                Learning Lab content and tools are provided for educational and informational use.
+                By using this site, you agree to use features lawfully and responsibly.
+              </p>
+              <ul>
+                <li>Do not misuse tools for fraud, deception, or unlawful activity.</li>
+                <li>Use generated examples only in testing, demos, or learning contexts.</li>
+                <li>External links are provided as references without warranty.</li>
+              </ul>
+            </article>
+          </section>
+        )}
+
+        {mode === "disclaimer" && (
+          <section className="workspace-shell legal-shell">
+            <div className="workspace-head">
+              <h2>Disclaimer</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <article className="tool-card legal-card">
+              <p>
+                Content across AI Studio, Java Learning, ID Tools, and Number Lab does not constitute
+                legal, financial, medical, or regulatory advice.
+              </p>
+              <ul>
+                <li>Verify critical information with authoritative primary sources.</li>
+                <li>Lottery-related content is educational and not betting advice.</li>
+                <li>ID generators are for format demonstration only.</li>
+              </ul>
+            </article>
+          </section>
+        )}
+
+        {mode === "contact" && (
+          <section className="workspace-shell legal-shell">
+            <div className="workspace-head">
+              <h2>Contact</h2>
+              <button type="button" onClick={() => setMode("home")}>Back to Learning Lab</button>
+            </div>
+            <article className="tool-card legal-card">
+              <p>For feedback, improvements, or collaboration inquiries:</p>
+              <p>
+                Email: <a href="mailto:hello@learninglab.dev">hello@learninglab.dev</a>
+              </p>
+              <p>
+                Include the page/tool name and steps to reproduce if reporting a bug.
+              </p>
+            </article>
+          </section>
+        )}
+
+        <footer className="ca-footer" aria-label="Footer links">
+          <p>© {new Date().getFullYear()} Learning Lab</p>
+          <div className="ca-footer-links">
+            <button type="button" onClick={() => setMode("privacy")}>Privacy Policy</button>
+            <button type="button" onClick={() => setMode("terms")}>Terms of Use</button>
+            <button type="button" onClick={() => setMode("disclaimer")}>Disclaimer</button>
+            <button type="button" onClick={() => setMode("contact")}>Contact</button>
+          </div>
+        </footer>
       </main>
     </ThemeProvider>
   );

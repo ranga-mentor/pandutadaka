@@ -477,6 +477,60 @@
   box-shadow: var(--shadow);
 }
 
+.legal-shell {
+  max-width: 920px;
+}
+
+.legal-card ul {
+  margin: 0.45rem 0 0;
+  padding-left: 1rem;
+}
+
+.legal-card li + li {
+  margin-top: 0.35rem;
+}
+
+.legal-note {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface));
+}
+
+.ca-footer {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+  padding: 0.85rem 0 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.ca-footer p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.ca-footer-links {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.ca-footer-links button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.82rem;
+  padding: 0.28rem 0.45rem;
+}
+
+.ca-footer-links button:hover {
+  border-color: var(--border);
+  background: var(--surface-alt);
+}
+
 .workspace-head {
   display: flex;
   align-items: center;
@@ -1687,6 +1741,11 @@
 
   .chapter-intro {
     font-size: 1.02rem;
+  }
+
+  .ca-footer {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .position-grid {
