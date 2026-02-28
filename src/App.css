@@ -514,6 +514,19 @@
   flex-wrap: wrap;
 }
 
+.ca-ad-slot {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  min-height: 32px;
+}
+
+#container-0a036d967800ce753294879aa59b9f8d {
+  max-width: 320px;
+  width: 100%;
+  overflow: hidden;
+}
+
 .ca-footer p {
   margin: 0;
   font-size: 0.84rem;

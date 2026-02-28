@@ -16,6 +16,9 @@ import type { Mode, ParsedRoute, SearchResult, SeoMeta } from "./types/appTypes"
 import "./App.css";
 
 const SEO_BASE_URL = "https://pandutadaka.com";
+const ADSTERRA_CONTAINER_ID = "container-0a036d967800ce753294879aa59b9f8d";
+const ADSTERRA_SCRIPT_SRC =
+  "https://pl28814063.effectivegatecpm.com/0a036d967800ce753294879aa59b9f8d/invoke.js";
 
 function getTrackLessons(trackIdx: number) {
   return learningTracks[trackIdx].modules.flatMap((module) =>
@@ -529,6 +532,19 @@ function App() {
     document.documentElement.setAttribute("data-theme", themeMode);
     window.localStorage.setItem("theme", themeMode);
   }, [themeMode]);
+
+  useEffect(() => {
+    const scriptId = "adsterra-invoke-script";
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement("script");
+      script.id = scriptId;
+      script.async = true;
+      script.setAttribute("data-cfasync", "false");
+      script.src = ADSTERRA_SCRIPT_SRC;
+      document.body.appendChild(script);
+    }
+  }, []);
 
   useEffect(() => {
     const routePath = buildRoute(mode, numbersMode, idCountryMode, javaPage, aiStudioPage, trackIndex, lessonIndex);
@@ -1137,6 +1153,10 @@ function App() {
             <button type="button" onClick={() => setMode("sitemap")}>Site Map</button>
           </div>
         </footer>
+
+        <section className="ca-ad-slot" aria-label="Advertisement">
+          <div id={ADSTERRA_CONTAINER_ID} />
+        </section>
       </main>
     </ThemeProvider>
   );
