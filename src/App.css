@@ -1192,6 +1192,26 @@
   margin: 0;
 }
 
+.ai-tool-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.ai-tool-link:hover {
+  text-decoration: underline;
+}
+
+.ai-tool-link-secondary {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.ai-tool-link-secondary:hover {
+  text-decoration: underline;
+}
+
 .ai-usage-flow ol {
   margin: 0.4rem 0 0;
   padding-left: 1.1rem;
