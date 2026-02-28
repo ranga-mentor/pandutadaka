@@ -6,6 +6,7 @@
 }
 
 .ca-header {
+  position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -15,6 +16,17 @@
   border-radius: 12px;
   padding: 0.75rem 1rem;
   box-shadow: var(--shadow);
+}
+
+.ca-header::after {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: -1px;
+  height: 3px;
+  background: #d90429;
+  border-radius: 999px;
 }
 
 .ca-brand {
@@ -504,6 +516,7 @@
 }
 
 .ca-footer {
+  position: relative;
   margin-top: 1rem;
   border-top: 1px solid var(--border);
   padding: 0.85rem 0 0.25rem;
@@ -512,6 +525,17 @@
   justify-content: space-between;
   gap: 0.8rem;
   flex-wrap: wrap;
+}
+
+.ca-footer::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #d90429;
+  border-radius: 999px;
 }
 
 .ca-ad-slot {
