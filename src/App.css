@@ -518,13 +518,24 @@
   margin-top: 1rem;
   display: flex;
   justify-content: center;
-  min-height: 32px;
+  width: 100%;
+  min-height: 50px;
 }
 
 #container-0a036d967800ce753294879aa59b9f8d {
-  max-width: 320px;
   width: 100%;
+  min-height: 50px;
   overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .ca-ad-slot {
+    min-height: 50px;
+  }
+
+  #container-0a036d967800ce753294879aa59b9f8d {
+    min-height: 50px;
+  }
 }
 
 .ca-footer p {
