@@ -147,8 +147,8 @@ const javaReleases = [
 ];
 
 type JavaFeaturesPageProps = {
-  javaPage: "core" | "junit" | "spring-boot" | "releases";
-  onJavaPageChange: (page: "core" | "junit" | "spring-boot" | "releases") => void;
+  javaPage: "core" | "junit" | "spring-boot" | "releases" | "cisco-router-health";
+  onJavaPageChange: (page: "core" | "junit" | "spring-boot" | "releases" | "cisco-router-health") => void;
 };
 
 function JavaFeaturesPage({ javaPage, onJavaPageChange }: JavaFeaturesPageProps) {
@@ -157,7 +157,7 @@ function JavaFeaturesPage({ javaPage, onJavaPageChange }: JavaFeaturesPageProps)
     <section className="java-page" aria-label="Java 11 to Java 25 features">
       <article className="tool-card java-hero">
         <h2>Java Learning Hub</h2>
-        <p>Use tabs to switch between Core Java, Java Features, JUnit, and Spring Boot.</p>
+        <p>Use tabs to switch between Core Java, Java Features, JUnit, Spring Boot, and Cisco Router Health.</p>
       </article>
 
       <section className="country-switcher java-topic-switcher" aria-label="Java topic pages">
@@ -188,6 +188,13 @@ function JavaFeaturesPage({ javaPage, onJavaPageChange }: JavaFeaturesPageProps)
           onClick={() => onJavaPageChange("spring-boot")}
         >
           Spring Boot
+        </button>
+        <button
+          type="button"
+          className={javaPage === "cisco-router-health" ? "is-active" : ""}
+          onClick={() => onJavaPageChange("cisco-router-health")}
+        >
+          Cisco Router Health
         </button>
       </section>
 
@@ -349,6 +356,62 @@ function JavaFeaturesPage({ javaPage, onJavaPageChange }: JavaFeaturesPageProps)
               </ul>
             </article>
           ))}
+        </section>
+      )}
+
+      {javaPage === "cisco-router-health" && (
+        <section className="java-grid">
+          <article className="tool-card java-release java-visual-card">
+            <h3>Cisco Router Health Visual Guide</h3>
+            <img
+              src="/cisco-router-health-checks.jpg"
+              alt="Cisco Router Health Checks visual guide with key CLI commands and troubleshooting flow"
+              width={1408}
+              height={768}
+              loading="lazy"
+            />
+          </article>
+          <article className="tool-card java-release">
+            <h3>Cisco Router Health Checklist</h3>
+            <ul>
+              <li><strong>CPU:</strong> alert when sustained usage stays above 80% for 5 minutes.</li>
+              <li><strong>Memory:</strong> watch low-memory events and process memory growth over time.</li>
+              <li><strong>Interfaces:</strong> track admin/oper status, drops, CRC errors, and utilization spikes.</li>
+              <li><strong>Routing:</strong> confirm OSPF/BGP neighbor state and route table stability.</li>
+              <li><strong>Environment:</strong> monitor temperature, fan, and power-supply sensor alarms.</li>
+            </ul>
+          </article>
+          <article className="tool-card java-release">
+            <h3>CLI Commands You Should Poll</h3>
+            <ul>
+              <li><code>show processes cpu sorted 5sec</code> for short-window CPU spikes.</li>
+              <li><code>show memory statistics</code> to identify pressure and fragmentation trends.</li>
+              <li><code>show interfaces</code> and <code>show interfaces counters errors</code> for link health.</li>
+              <li><code>show ip route summary</code> and <code>show ip ospf neighbor</code> / <code>show ip bgp summary</code>.</li>
+              <li><code>show environment all</code> for thermal and hardware status.</li>
+            </ul>
+          </article>
+          <article className="tool-card java-release">
+            <h3>Java Monitoring Flow</h3>
+            <ul>
+              <li>Schedule polling every 30-60 seconds using <code>ScheduledExecutorService</code>.</li>
+              <li>Connect using SSH (for CLI scraping) or SNMP for structured metrics.</li>
+              <li>Parse command output into typed Java records for CPU, memory, interface, and routing stats.</li>
+              <li>Apply thresholds and anomaly windows before emitting alerts to reduce noise.</li>
+              <li>Persist snapshots to a time-series table for trend and incident analysis.</li>
+            </ul>
+          </article>
+          <article className="tool-card java-release">
+            <h3>Java Starter Skeleton</h3>
+            <pre>
+              <code>{`record RouterHealth(double cpu, double memoryUsedPct, int interfaceErrors, boolean routingHealthy) {}
+
+boolean isUnhealthy(RouterHealth h) {
+  return h.cpu() > 80.0 || h.memoryUsedPct() > 85.0 || h.interfaceErrors() > 0 || !h.routingHealthy();
+}`}</code>
+            </pre>
+            <p>Start with conservative thresholds, then tune based on baseline behavior in your network.</p>
+          </article>
         </section>
       )}
     </section>

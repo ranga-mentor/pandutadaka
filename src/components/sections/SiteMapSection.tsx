@@ -18,6 +18,7 @@ export default function SiteMapSection() {
           <li><a href="/java/junit">Java Learning - JUnit</a></li>
           <li><a href="/java/spring-boot">Java Learning - Spring Boot</a></li>
           <li><a href="/java/releases">Java Learning - Java Features</a></li>
+          <li><a href="/java/cisco-router-health">Java Learning - Cisco Router Health</a></li>
           <li><a href="/ai-studio/visuals">AI Studio - Visual Flipbook</a></li>
           <li><a href="/ai-studio/tools">AI Studio - AI Tools</a></li>
           <li><a href="/privacy-policy">Privacy Policy</a></li>

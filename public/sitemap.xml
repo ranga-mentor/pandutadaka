@@ -56,6 +56,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://pandutadaka.com/java/cisco-router-health</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://pandutadaka.com/ai-studio/visuals</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

@@ -30,7 +30,7 @@ function buildRoute(
   mode: Mode,
   numbersMode: "4d" | "toto",
   idCountryMode: "sg" | "my" | "hk",
-  javaPage: "core" | "junit" | "spring-boot" | "releases",
+  javaPage: "core" | "junit" | "spring-boot" | "releases" | "cisco-router-health",
   aiStudioPage: "visuals" | "heartfulness",
   trackIndex: number,
   lessonIndex: number,
@@ -94,6 +94,9 @@ function parseRoute(pathname: string, search: string): ParsedRoute {
   if (pathname === "/java/releases") {
     return { mode: "java", javaPage: "releases" };
   }
+  if (pathname === "/java/cisco-router-health") {
+    return { mode: "java", javaPage: "cisco-router-health" };
+  }
   if (pathname === "/java/spring-boot") {
     return { mode: "java", javaPage: "spring-boot" };
   }
@@ -131,7 +134,7 @@ function getSeoMeta(
   mode: Mode,
   numbersMode: "4d" | "toto",
   idCountryMode: "sg" | "my" | "hk",
-  javaPage: "core" | "junit" | "spring-boot" | "releases",
+  javaPage: "core" | "junit" | "spring-boot" | "releases" | "cisco-router-health",
   aiStudioPage: "visuals" | "heartfulness",
   activeTrackTitle: string,
   activeLessonTitle: string,
@@ -192,6 +195,12 @@ function getSeoMeta(
       description: "Release-wise Java feature highlights from Java 11 through Java 25.",
     };
   }
+  if (mode === "java" && javaPage === "cisco-router-health") {
+    return {
+      title: "Cisco Router Health Check with Java | Learning Lab",
+      description: "Java-based checklist and sample workflow to validate Cisco router health and core network signals.",
+    };
+  }
   if (mode === "ai" && aiStudioPage === "heartfulness") {
     return {
       title: "AI Tools | Learning Lab",
@@ -229,7 +238,7 @@ function App() {
   const [mode, setMode] = useState<Mode>("home");
   const [numbersMode, setNumbersMode] = useState<"4d" | "toto">("4d");
   const [idCountryMode, setIdCountryMode] = useState<"sg" | "my" | "hk">("sg");
-  const [javaPage, setJavaPage] = useState<"core" | "junit" | "spring-boot" | "releases">("core");
+  const [javaPage, setJavaPage] = useState<"core" | "junit" | "spring-boot" | "releases" | "cisco-router-health">("core");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [themeMode, setThemeMode] = useState<"light" | "dark">(() => {
@@ -371,6 +380,14 @@ function App() {
         mode: "java",
         javaPage: "releases",
         keywords: ["java 11", "java 17", "java 21", "java 25", "release notes"],
+      },
+      {
+        id: "java-cisco-router-health",
+        label: "Cisco Router Health Checker",
+        hint: "Java workflow for Cisco router health signals",
+        mode: "java",
+        javaPage: "cisco-router-health",
+        keywords: ["cisco", "router", "health", "snmp", "java network monitoring"],
       },
       {
         id: "ai",
