@@ -32,7 +32,7 @@ export type SearchResult = {
   mode: Mode;
   numbersMode?: "4d" | "toto";
   idCountryMode?: "sg" | "my" | "hk";
-  javaPage?: "core" | "junit" | "spring-boot" | "releases" | "cisco-router-health";
+  javaPage?: "core" | "junit" | "spring-boot" | "releases";
   trackIndex?: number;
   lessonIndex?: number;
   keywords?: string[];
@@ -48,7 +48,7 @@ export type ParsedRoute = {
   mode: Mode;
   numbersMode?: "4d" | "toto";
   idCountryMode?: "sg" | "my" | "hk";
-  javaPage?: "core" | "junit" | "spring-boot" | "releases" | "cisco-router-health";
+  javaPage?: "core" | "junit" | "spring-boot" | "releases";
   aiStudioPage?: "visuals" | "heartfulness";
   trackIndex?: number;
   lessonIndex?: number;
