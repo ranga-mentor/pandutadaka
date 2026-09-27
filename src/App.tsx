@@ -3,6 +3,7 @@ import { CssBaseline, IconButton, ThemeProvider, createTheme } from "@mui/materi
 import { trackEvent } from "./analytics";
 import AiHeartfulnessToolsPage from "./components/AiHeartfulnessToolsPage";
 import HomeSection from "./components/sections/HomeSection";
+import HuggingFaceFeedPage from "./components/HuggingFaceFeedPage";
 import LegalSection from "./components/sections/LegalSection";
 import SiteMapSection from "./components/sections/SiteMapSection";
 import WorkbookSection from "./components/sections/WorkbookSection";
@@ -62,6 +63,9 @@ function buildRoute(
   }
   if (mode === "ai") {
     return aiStudioPage === "heartfulness" ? "/ai-studio/tools" : "/ai-studio/visuals";
+  }
+  if (mode === "hf-blog") {
+    return "/hugging-face-blog";
   }
   if (mode === "java") {
     return `/java/${javaPage}`;
@@ -123,6 +127,9 @@ function parseRoute(pathname: string, search: string): ParsedRoute {
   }
   if (pathname === "/ai-studio/visuals" || pathname === "/ai-studio") {
     return { mode: "ai", aiStudioPage: "visuals" };
+  }
+  if (pathname === "/hugging-face-blog") {
+    return { mode: "hf-blog" };
   }
   if (pathname === "/privacy-policy") {
     return { mode: "privacy" };
@@ -225,6 +232,12 @@ function getSeoMeta(
       title: "AI Tools | Learning Lab",
       description:
         "Useful AI tools and use cases for research, writing, automation, video, and productivity workflows.",
+    };
+  }
+  if (mode === "hf-blog") {
+    return {
+      title: "Hugging Face Blog RSS | Learning Lab",
+      description: "The latest Hugging Face Blog posts, loaded from the official RSS feed.",
     };
   }
   if (mode === "workbook") {
@@ -427,6 +440,13 @@ function App() {
         hint: "Prompting, AI workflows, and Heartfulness tools",
         mode: "ai",
         keywords: ["ai", "prompt", "llm", "assistant", "heartfulness", "notebooklm", "perplexity", "gemini"],
+      },
+      {
+        id: "hugging-face-blog",
+        label: "Hugging Face Blog",
+        hint: "Latest posts from the official RSS feed",
+        mode: "hf-blog",
+        keywords: ["hugging face", "huggingface", "rss", "ai news", "models"],
       },
       {
         id: "privacy",
@@ -860,6 +880,9 @@ function App() {
             <button className={mode === "ai" ? "is-active" : ""} onClick={() => setMode("ai")} type="button">
               <span className="ai-icon" aria-hidden="true">🤖</span> AI
             </button>
+            <button className={mode === "hf-blog" ? "is-active" : ""} onClick={() => setMode("hf-blog")} type="button">
+              HF Blog
+            </button>
             <button className={mode === "id-tools" ? "is-active" : ""} onClick={() => setMode("id-tools")} type="button">
               Tools
             </button>
@@ -1217,6 +1240,8 @@ function App() {
             )}
           </section>
         )}
+
+        {mode === "hf-blog" && <HuggingFaceFeedPage />}
 
         {(mode === "privacy" || mode === "terms" || mode === "disclaimer" || mode === "contact") && (
           <LegalSection mode={mode} />

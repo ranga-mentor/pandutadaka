@@ -76,6 +76,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://pandutadaka.com/hugging-face-blog</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://pandutadaka.com/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>

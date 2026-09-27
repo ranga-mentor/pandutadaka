@@ -5,6 +5,7 @@ export type Mode =
   | "numbers"
   | "java"
   | "ai"
+  | "hf-blog"
   | "privacy"
   | "terms"
   | "disclaimer"

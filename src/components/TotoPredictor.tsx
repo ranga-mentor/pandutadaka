@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import {
   getMergedDatasetSummary,
   getPrediction,
+  getRecent4DDraws,
   getTotoPredictorSources,
   type TotoPrediction,
 } from "../tools/totoPredictor";
@@ -14,6 +15,7 @@ export default function TotoPredictor() {
   );
   const sources = useMemo(() => getTotoPredictorSources(), []);
   const summary = useMemo(() => getMergedDatasetSummary(), []);
+  const recentDraws = useMemo(() => getRecent4DDraws(), []);
 
   async function copyAll() {
     const value = prediction.picks.map((pick) => pick.value).join(", ");
@@ -91,6 +93,17 @@ export default function TotoPredictor() {
             );
           })}
         </div>
+      </article>
+
+      <article className="tool-card">
+        <h3>Latest 4D Results</h3>
+        <ul className="source-list fourd-results-list">
+          {recentDraws.map((draw) => (
+            <li key={draw.drawNo}>
+              <strong>{draw.drawDate}</strong> Draw {draw.drawNo}: 1st <code>{draw.first}</code> | 2nd <code>{draw.second}</code> | 3rd <code>{draw.third}</code>
+            </li>
+          ))}
+        </ul>
       </article>
 
       <article className="tool-card">

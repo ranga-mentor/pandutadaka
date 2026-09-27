@@ -36,6 +36,13 @@ export const featureCards: FeatureCard[] = [
     mode: "ai",
     image: "/ai-studio.jpg",
   },
+  {
+    title: "Hugging Face Blog",
+    description: "Read the latest Hugging Face Blog posts from the official RSS feed.",
+    action: "Open Hugging Face Blog",
+    mode: "hf-blog",
+    image: "/LLM.jpg",
+  },
 ];
 
 export const aiPosterSlides: AiPosterSlide[] = [
@@ -100,6 +107,11 @@ export const seoByMode: Record<Mode, SeoMeta> = {
     description:
       "AI Studio with flipbook guides, prompt workflows, and practical AI tool usage patterns.",
     path: "/ai-studio",
+  },
+  "hf-blog": {
+    title: "Hugging Face Blog RSS | Learning Lab",
+    description: "The latest Hugging Face Blog posts, loaded from the official RSS feed.",
+    path: "/hugging-face-blog",
   },
   privacy: {
     title: "Privacy Policy | Learning Lab",

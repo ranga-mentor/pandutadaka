@@ -21,6 +21,14 @@ export type TotoPrediction = {
   positionProbabilities: PositionProbability[];
 };
 
+export type FourDRecentDraw = {
+  drawDate: string;
+  drawNo: string;
+  first: string;
+  second: string;
+  third: string;
+};
+
 export type PredictionOptions = {
   timestamp?: number;
   randomness?: number;
@@ -88,6 +96,60 @@ const SGP_TOP_100_FREQUENT_4D: FrequencyRow[] = [
 ];
 
 const SINGAPORE_POOLS_DRAWS: DrawRow[] = [
+  {
+    drawDate: "2026-09-23",
+    drawNo: "5539",
+    numbers: [
+      "5272", "4898", "7574",
+      "0502", "0527", "1590", "3771", "5787", "6406", "6875", "6895", "7583", "9875",
+      "0204", "0659", "1275", "2244", "2699", "5487", "5943", "6864", "7153", "9423",
+    ],
+  },
+  {
+    drawDate: "2026-09-20",
+    drawNo: "5538",
+    numbers: [
+      "9622", "9248", "6307",
+      "0437", "1751", "3151", "4105", "4679", "5367", "7261", "8939", "9107", "9493",
+      "0714", "1197", "1338", "2411", "2420", "3093", "3323", "3415", "7426", "7892",
+    ],
+  },
+  {
+    drawDate: "2026-09-19",
+    drawNo: "5537",
+    numbers: [
+      "0921", "3068", "2114",
+      "0151", "1665", "3071", "3364", "4698", "6211", "6557", "6602", "7072", "7527",
+      "0973", "2766", "3221", "3890", "4749", "4833", "5331", "7235", "7531", "7913",
+    ],
+  },
+  {
+    drawDate: "2026-09-16",
+    drawNo: "5536",
+    numbers: [
+      "9224", "1136", "8473",
+      "0019", "0660", "0828", "2713", "4681", "4765", "6060", "6475", "6781", "8236",
+      "2356", "4848", "5137", "6791", "7318", "7410", "7633", "8951", "9241", "9710",
+    ],
+  },
+  {
+    drawDate: "2026-09-13",
+    drawNo: "5535",
+    numbers: [
+      "9400", "3057", "8077",
+      "1368", "1383", "1427", "1673", "2572", "4363", "4609", "5808", "7003", "8861",
+      "0235", "0879", "1589", "2012", "4671", "4932", "6220", "6568", "7139", "9777",
+    ],
+  },
+  {
+    drawDate: "2026-09-12",
+    drawNo: "5534",
+    numbers: [
+      "2710", "2469", "6782",
+      "0694", "1487", "2871", "4960", "5999", "6687", "7884", "9181", "9532", "9600",
+      "0194", "1585", "3320", "3425", "4425", "6367", "6577", "7074", "9094", "9982",
+    ],
+  },
   {
     drawDate: "2026-02-25",
     drawNo: "5449",
@@ -466,4 +528,16 @@ export function getMergedDatasetSummary(): {
     totalDraws: drawKeys,
     sources,
   };
+}
+
+export function getRecent4DDraws(limit = 6): FourDRecentDraw[] {
+  return SINGAPORE_POOLS_DRAWS
+    .slice(0, Math.max(1, Math.min(limit, SINGAPORE_POOLS_DRAWS.length)))
+    .map((draw) => ({
+      drawDate: draw.drawDate,
+      drawNo: draw.drawNo,
+      first: draw.numbers[0],
+      second: draw.numbers[1],
+      third: draw.numbers[2],
+    }));
 }
